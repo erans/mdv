@@ -8,6 +8,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	"mdv/mermaid"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -70,9 +72,114 @@ func main() {
 	}
 }
 
-// renderMarkdown is the whole markdown pipeline: glamour, our palette, our
-// width, minus the padding glamour adds to fill it.
+// renderMarkdown splits mermaid fences out of the document, draws them, and
+// lets glamour render everything around them.
 func renderMarkdown(src string, pal Palette, width int) (string, error) {
+	var b strings.Builder
+	for _, seg := range splitFences(src) {
+		if seg.mermaid {
+			art, err := mermaid.Render(seg.text)
+			if err == nil && art.Width <= width {
+				b.WriteString(styleArt(art, pal))
+				b.WriteString("\n")
+				continue
+			}
+			seg = segment{text: "```mermaid\n" + strings.TrimRight(seg.text, "\n") + "\n```\n"}
+		}
+		out, err := renderFragment(seg.text, pal, width)
+		if err != nil {
+			return "", err
+		}
+		b.WriteString(out)
+	}
+	return b.String(), nil
+}
+
+type segment struct {
+	text    string
+	mermaid bool
+}
+
+// splitFences pulls top-level mermaid fences out of the document.
+//
+// shortcut: fences nested inside a list item or blockquote are left to glamour
+// (they render as code). Upgrade if that ever shows up in a real README.
+func splitFences(src string) []segment {
+	var out []segment
+	var text strings.Builder
+	lines := strings.Split(src, "\n")
+	for i := 0; i < len(lines); i++ {
+		line := lines[i]
+		if lang, ok := fenceLang(line); ok && lang == "mermaid" {
+			var body strings.Builder
+			for i++; i < len(lines); i++ {
+				if strings.HasPrefix(strings.TrimSpace(lines[i]), "```") {
+					break
+				}
+				body.WriteString(lines[i] + "\n")
+			}
+			if text.Len() > 0 {
+				out = append(out, segment{text: text.String()})
+				text.Reset()
+			}
+			out = append(out, segment{text: body.String(), mermaid: true})
+			continue
+		}
+		text.WriteString(line + "\n")
+	}
+	if text.Len() > 0 {
+		out = append(out, segment{text: text.String()})
+	}
+	return out
+}
+
+func fenceLang(line string) (string, bool) {
+	t := strings.TrimSpace(line)
+	if !strings.HasPrefix(t, "```") {
+		return "", false
+	}
+	return strings.ToLower(strings.TrimSpace(t[3:])), true
+}
+
+// styleArt colors a diagram by what each cell means.
+func styleArt(art *mermaid.Art, pal Palette) string {
+	var b strings.Builder
+	for _, row := range art.Cells {
+		for start := 0; start < len(row); {
+			cl := row[start].Cl
+			end := start
+			for end < len(row) && row[end].Cl == cl {
+				end++
+			}
+			var run strings.Builder
+			for _, c := range row[start:end] {
+				run.WriteRune(c.Ch)
+			}
+			b.WriteString(paintClass(pal, cl, run.String()))
+			start = end
+		}
+		b.WriteString("\n")
+	}
+	return b.String()
+}
+
+func paintClass(pal Palette, cl mermaid.Class, s string) string {
+	switch cl {
+	case mermaid.Border:
+		return paint(pal.Muted, s)
+	case mermaid.Text:
+		return paint(pal.Fg, s)
+	case mermaid.Edge:
+		return paint(pal.Accent, s)
+	case mermaid.EdgeLabel:
+		return paint(blend(pal.Fg, pal.Muted, 0.5), s)
+	case mermaid.Title:
+		return paint(pal.Accent, s)
+	}
+	return s
+}
+
+func renderFragment(src string, pal Palette, width int) (string, error) {
 	out, err := glamour.NewTermRenderer(
 		glamour.WithStyles(pal.StyleConfig()),
 		glamour.WithWordWrap(width),

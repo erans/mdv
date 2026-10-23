@@ -69,10 +69,37 @@ decides the colors — and whether the result is light or dark.
 Everything renders against twelve palette roles (`accent`, `muted`, `selection`,
 `foreground` and six hues). No hex literals below `style.go`.
 
+## Mermaid
+
+Fences are drawn as box art, inline, in the document flow:
+
+![mdv drawing a mermaid flowchart](docs/flowchart.svg)
+
+```mermaid
+graph LR
+  A[README.md] --> B{mermaid fence?}
+  B -->|yes| C[draw box art]
+  B -->|no| D[render markdown]
+  C --> E[your terminal]
+  D --> E
+```
+
+Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square
+`[]`, rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
+`|labels|` or `-- labels -->`, chains (`A --> B --> C`) and fan-out
+(`A --> B & C`). Long edges swing around the boxes they skip instead of
+cutting through them. Anything the renderer cannot draw — too wide, unknown
+diagram type — is printed as source, never clipped.
+
+Sequence, state, class and ER diagrams are next.
+
 ## How it works
 
 - Markdown → ANSI is [glamour](https://github.com/charmbracelet/glamour), so
   text, code and syntax highlighting are not reinvented here.
+- Mermaid fences are cut out of the document before glamour sees them, drawn
+  by `mermaid.Render`, and spliced back in. Every edge reserves its own lane in
+  the gap it crosses, so two arrows between the same ranks never overlap.
 - The viewer is [bubbletea](https://github.com/charmbracelet/bubbletea), with a
   hand-drawn scrollbar and footer.
 - Link spans are recovered by walking the rendered lines and counting visible
@@ -93,7 +120,9 @@ Everything renders against twelve palette roles (`accent`, `muted`, `selection`,
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
 - [x] Omarchy palettes, terminal queries, built-in fallback
 - [ ] own table renderer (glamour truncates cells at the wrap boundary)
-- [ ] mermaid diagrams as box art, all six types
+- [ ] `subgraph` frames and titles (members are drawn, the box is not)
+- [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
+- [ ] mermaid sequence, state, class and ER diagrams
 - [ ] inline images via kitty graphics, iTerm2 and sixel
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
