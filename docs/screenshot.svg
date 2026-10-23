@@ -140,9 +140,10 @@
 <text x="412.1" y="462.5" textLength="320.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                      </text>
 <rect x="735.9" y="447.9" width="1.4" height="18.8" fill="#cdd6f4"/>
 <text x="16.0" y="481.2" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">• </text>
-<text x="32.9" y="481.2" textLength="396.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">mermaid diagrams and inline images: next on the</text>
-<text x="429.0" y="481.2" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> list</text>
-<text x="471.1" y="481.2" textLength="261.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                               </text>
+<text x="32.9" y="481.2" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">mermaid</text>
+<text x="91.9" y="481.2" textLength="244.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> flowcharts drawn as box art,</text>
+<text x="336.3" y="481.2" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> inline</text>
+<text x="395.3" y="481.2" textLength="337.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                        </text>
 <rect x="735.9" y="466.6" width="1.4" height="18.8" fill="#cdd6f4"/>
 <text x="16.0" y="500.0" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">screenshot.md</text>
 <text x="125.6" y="500.0" textLength="472.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                        </text>

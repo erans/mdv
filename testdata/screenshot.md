@@ -24,7 +24,7 @@ func main() {
 - **tables** that fit the pane instead of overflowing it
 - **colors** taken from the desktop's own theme, not a hardcoded palette
 - **links** you can click, a **scrollbar** you can drag
-- mermaid diagrams and inline images: next on the list
+- **mermaid** flowcharts drawn as box art, inline
 
 ## Viewer
 
