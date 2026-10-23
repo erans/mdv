@@ -1,1 +1,16 @@
+# build output
 /mdv
+/dist/
+*.exe
+*.test
+*.out
+coverage.*
+
+# nothing generated here is committed except docs/screenshot.svg
+/tmp/
+
+# editor and OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp

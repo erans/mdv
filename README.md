@@ -1,57 +1,100 @@
 # mdv
 
-Terminal markdown viewer: tables, mermaid diagrams as box art, images where the
-terminal can paint them, colored by the desktop's theme.
+**A markdown viewer that looks like it belongs on your desktop.**
 
+![mdv rendering a README](docs/screenshot.svg)
+
+Your terminal already has a theme. Your bar, your editor and your file manager
+already match it. Then you `cat README.md` and get a wall of plain text with a
+table that wraps into nonsense.
+
+`mdv` renders the README properly — headings, tables that fit the pane,
+highlighted code, clickable links, a scrollbar you can drag — **in the colors of
+the theme you are already running**.
+
+## Why this one
+
+- **It reads your theme, it does not ship one.** On Omarchy that means the exact
+  palette your desktop is wearing, `accent` on headings and links, `muted` on
+  borders, `selection` behind inline code. Change the theme, `mdv` changes with
+  it. No config file, no `--style` flag to remember.
+- **Tables that behave.** Wide tables shrink their columns, wrap their cells and
+  keep their borders. Narrow terminals get wrapped text, not truncated words.
+- **Links you can actually click.** Terminals hand clicks to the app, so a
+  plain hyperlink would never fire inside a full-screen viewer. `mdv` keeps the
+  link spans from the rendered output and opens the one you clicked.
+- **A scrollbar with a position, not a guess.** Thumb on the right edge, and a
+  footer that says `42%` and `118/254` so you know where you are.
+
+## Install
+
+```sh
+go install ./...     # or: go build -o mdv .
 ```
-mdv README.md          # open the viewer
-mdv -w 100 README.md   # open it at a fixed width
-cat x.md | mdv         # stdin
-mdv -plain README.md   # print once, no viewer (also what pipes get)
-mdv -palette           # show the resolved palette
+
+## Use
+
+```sh
+mdv README.md            # open the viewer
+mdv -w 100 README.md     # fixed width
+cat x.md | mdv           # stdin
+mdv -plain README.md     # print once, no viewer (what pipes get anyway)
+mdv -palette             # show the resolved palette and exit
+mdv -theme my.toml x.md  # use a specific colors.toml
 ```
-
-## Viewer
-
-Full screen, the last column is the scrollbar: the thumb shows how far you
-are, and the footer shows the percentage and current line.
 
 | Input | Does |
 |---|---|
-| wheel, `j`/`k`, `↑`/`↓` | scroll a line (wheel moves three) |
-| click / drag the scrollbar | jump, or scrub |
-| click a link | opens it with `xdg-open` (`open` on macOS) |
+| wheel, `j`/`k`, `↑`/`↓` | scroll a line (the wheel moves three) |
+| click or drag the scrollbar | jump, or scrub through the document |
+| click a link | open it with `xdg-open` (`open` on macOS) |
 | `d`/`u`, `space`, `PgUp`/`PgDn` | half a page |
 | `g`/`G`, `Home`/`End` | top, bottom |
 | `q`, `Esc`, `Ctrl+C` | quit |
-
-Clicking a link inside the viewer works even though the terminal hands its
-clicks to the app: the renderer keeps its OSC 8 hyperlinks, and the viewer
-recovers each link's columns from that output to hit-test the click.
 
 ## Theme
 
 Colors come from the first source that answers:
 
-1. `-theme FILE`, or the active Omarchy theme
-   (`~/.local/state/omarchy/current/theme/colors.toml`, then Omarchy 2's
-   `~/.config/omarchy/current/theme/colors.toml`).
-2. The terminal itself: OSC 10/11 and the ANSI hues in one bounded query.
+1. `-theme FILE`, or the active Omarchy theme —
+   `~/.local/state/omarchy/current/theme/colors.toml`, then Omarchy 2's
+   `~/.config/omarchy/current/theme/colors.toml`.
+2. The terminal itself: OSC 10/11 and the ANSI hues, in one bounded query.
 3. A built-in dark palette.
 
-The theme file wins over the terminal on purpose: over SSH the local terminal is
-only a window onto someone else's desktop, so the remote theme decides the
-colors — and whether the result is light or dark.
+**The theme file wins over the terminal on purpose.** Over SSH your local
+terminal is only a window onto someone else's desktop, so the remote theme
+decides the colors — and whether the result is light or dark.
 
-Everything renders against twelve palette roles (accent, muted, selection,
-foreground, and the six hues), never against hex literals.
+Everything renders against twelve palette roles (`accent`, `muted`, `selection`,
+`foreground` and six hues). No hex literals below `style.go`.
+
+## How it works
+
+- Markdown → ANSI is [glamour](https://github.com/charmbracelet/glamour), so
+  text, code and syntax highlighting are not reinvented here.
+- The viewer is [bubbletea](https://github.com/charmbracelet/bubbletea), with a
+  hand-drawn scrollbar and footer.
+- Link spans are recovered by walking the rendered lines and counting visible
+  columns while skipping SGR and OSC sequences, so a click maps to exactly the
+  characters the terminal drew.
+- `-frame` prints one viewer frame; `tools/frame2svg.py` turns it into the SVG
+  screenshot at the top of this file:
+
+  ```sh
+  go build -o mdv .
+  ./mdv -frame -w 86 -h 26 -theme testdata/tokyo-night.toml testdata/screenshot.md \
+    | python3 tools/frame2svg.py > docs/screenshot.svg
+  ```
 
 ## Status
 
 - [x] markdown, tables, syntax highlighting, hyperlinks
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
-- [ ] mermaid diagrams (all six types) as box art
-- [ ] images via kitty graphics / iTerm2 / sixel, halfblock fallback
+- [x] Omarchy palettes, terminal queries, built-in fallback
+- [ ] own table renderer (glamour truncates cells at the wrap boundary)
+- [ ] mermaid diagrams as box art, all six types
+- [ ] inline images via kitty graphics, iTerm2 and sixel
 
-Known gaps: glamour does not expose table border colors, so borders keep the
-terminal's default foreground; link URLs are printed after the link text.
+`go test ./...` covers the palette parser, the OSC reply parser, the link
+recovery, the scrollbar math and the frame layout.

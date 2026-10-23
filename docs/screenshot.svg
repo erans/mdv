@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="756" height="519" viewBox="0 0 756 519" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#cdd6f4">
+<rect width="756" height="519" rx="10" fill="#11111b"/>
+<text x="16.0" y="31.0" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600" text-decoration="underline">mdv</text>
+<text x="41.3" y="31.0" textLength="691.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600" text-decoration="underline">                                                                                  </text>
+<rect x="732.4" y="16.4" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="49.8" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="732.4" y="35.1" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="68.5" textLength="539.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">A terminal markdown viewer that renders like the desktop it runs</text>
+<text x="555.4" y="68.5" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> on.</text>
+<text x="589.1" y="68.5" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                 </text>
+<rect x="732.4" y="53.9" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="87.3" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="732.4" y="72.7" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="106.0" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">Theme</text>
+<text x="58.1" y="106.0" textLength="674.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                                                                </text>
+<rect x="732.4" y="91.4" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="124.8" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="732.4" y="110.2" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="143.6" textLength="387.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">Colors come from the active Omarchy theme, so </text>
+<text x="403.7" y="143.6" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">mdv</text>
+<text x="429.0" y="143.6" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> matches your</text>
+<text x="538.5" y="143.6" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> bar, </text>
+<text x="589.1" y="143.6" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">your terminal and</text>
+<rect x="732.4" y="128.9" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="162.3" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">your</text>
+<text x="49.7" y="162.3" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> editor:</text>
+<text x="117.1" y="162.3" textLength="615.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                         </text>
+<rect x="732.4" y="147.7" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="181.1" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="732.4" y="166.5" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="199.8" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="24.4" y="199.8" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">Role</text>
+<text x="58.1" y="199.8" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">               │ </text>
+<text x="201.4" y="199.8" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">Source</text>
+<text x="252.0" y="199.8" textLength="126.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">             │ </text>
+<text x="378.4" y="199.8" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">Used</text>
+<text x="412.1" y="199.8" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> for</text>
+<text x="445.8" y="199.8" textLength="286.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                  </text>
+<rect x="732.4" y="185.2" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="218.6" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">────────────────────┼────────────────────┼───────────────────────────────────────────</text>
+<rect x="732.4" y="204.0" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="237.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="24.4" y="237.4" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">accent</text>
+<text x="75.0" y="237.4" textLength="126.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">             │ </text>
+<text x="201.4" y="237.4" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">colors.toml</text>
+<text x="294.1" y="237.4" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">        │ </text>
+<text x="378.4" y="237.4" textLength="295.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">headings, links, bullets, scrollbar</text>
+<text x="673.4" y="237.4" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> thumb</text>
+<text x="724.0" y="237.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="732.4" y="222.7" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="256.1" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="24.4" y="256.1" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">muted</text>
+<text x="66.6" y="256.1" textLength="134.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">              │ </text>
+<text x="201.4" y="256.1" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">colors.toml</text>
+<text x="294.1" y="256.1" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">        │ </text>
+<text x="378.4" y="256.1" textLength="286.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">borders, quotes, footer, scrollbar</text>
+<text x="665.0" y="256.1" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> track</text>
+<text x="715.5" y="256.1" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">  </text>
+<rect x="732.4" y="241.5" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="274.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="24.4" y="274.9" textLength="75.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">selection</text>
+<text x="100.3" y="274.9" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">          │ </text>
+<text x="201.4" y="274.9" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">colors.toml</text>
+<text x="294.1" y="274.9" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">        │ </text>
+<text x="378.4" y="274.9" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">inline code</text>
+<text x="471.1" y="274.9" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> chips</text>
+<text x="521.7" y="274.9" textLength="210.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                         </text>
+<rect x="732.4" y="260.3" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="293.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="24.4" y="293.6" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">six</text>
+<text x="49.7" y="293.6" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> hues</text>
+<text x="91.9" y="293.6" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">           │ </text>
+<text x="201.4" y="293.6" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">colors.toml</text>
+<text x="294.1" y="293.6" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">        │ </text>
+<text x="378.4" y="293.6" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">syntax</text>
+<text x="429.0" y="293.6" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> highlighting</text>
+<text x="538.5" y="293.6" textLength="193.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                       </text>
+<rect x="732.4" y="279.0" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="312.4" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="732.4" y="297.8" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="331.2" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">func</text>
+<text x="49.7" y="331.2" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="58.1" y="331.2" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">main</text>
+<text x="91.9" y="331.2" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">()</text>
+<text x="108.7" y="331.2" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="117.1" y="331.2" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">{</text>
+<text x="125.6" y="331.2" textLength="606.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                        </text>
+<rect x="735.9" y="316.5" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="349.9" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">    </text>
+<text x="49.7" y="349.9" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">pal</text>
+<text x="75.0" y="349.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="83.4" y="349.9" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">:=</text>
+<text x="100.3" y="349.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="108.7" y="349.9" textLength="118.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">resolvePalette</text>
+<text x="226.7" y="349.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">(</text>
+<text x="235.1" y="349.9" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">""</text>
+<text x="252.0" y="349.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">)</text>
+<text x="260.4" y="349.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="268.8" y="349.9" textLength="362.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">// theme file, then terminal, then built-in</text>
+<text x="631.2" y="349.9" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">            </text>
+<rect x="735.9" y="335.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="368.7" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">    </text>
+<text x="49.7" y="368.7" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">run</text>
+<text x="75.0" y="368.7" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">(</text>
+<text x="83.4" y="368.7" textLength="75.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">newViewer</text>
+<text x="159.3" y="368.7" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">(</text>
+<text x="167.7" y="368.7" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">"README.md"</text>
+<text x="260.4" y="368.7" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">,</text>
+<text x="268.8" y="368.7" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="277.3" y="368.7" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">src</text>
+<text x="302.6" y="368.7" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">,</text>
+<text x="311.0" y="368.7" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="319.4" y="368.7" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">pal</text>
+<text x="344.7" y="368.7" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">))</text>
+<text x="361.5" y="368.7" textLength="370.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                            </text>
+<rect x="735.9" y="354.1" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="387.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">}</text>
+<text x="24.4" y="387.4" textLength="708.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                    </text>
+<rect x="735.9" y="372.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="406.2" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="735.9" y="391.6" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="425.0" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">• </text>
+<text x="32.9" y="425.0" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">tables</text>
+<text x="83.4" y="425.0" textLength="345.5" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> that fit the pane instead of overflowing</text>
+<text x="429.0" y="425.0" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> it</text>
+<text x="454.3" y="425.0" textLength="278.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                 </text>
+<rect x="735.9" y="410.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="443.7" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">• </text>
+<text x="32.9" y="443.7" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">colors</text>
+<text x="83.4" y="443.7" textLength="438.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> taken from the desktop's own theme, not a hardcoded</text>
+<text x="521.7" y="443.7" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> palette</text>
+<text x="589.1" y="443.7" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                 </text>
+<rect x="735.9" y="429.1" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="462.5" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">• </text>
+<text x="32.9" y="462.5" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">links</text>
+<text x="75.0" y="462.5" textLength="151.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> you can click, a </text>
+<text x="226.7" y="462.5" textLength="75.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">scrollbar</text>
+<text x="302.6" y="462.5" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> you can</text>
+<text x="370.0" y="462.5" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> drag</text>
+<text x="412.1" y="462.5" textLength="320.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                      </text>
+<rect x="735.9" y="447.9" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="481.2" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">• </text>
+<text x="32.9" y="481.2" textLength="396.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">mermaid diagrams and inline images: next on the</text>
+<text x="429.0" y="481.2" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> list</text>
+<text x="471.1" y="481.2" textLength="261.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                               </text>
+<rect x="735.9" y="466.6" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="500.0" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">screenshot.md</text>
+<text x="125.6" y="500.0" textLength="472.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                        </text>
+<text x="597.5" y="500.0" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">0%  25/38  q quit</text>
+</svg>

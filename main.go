@@ -24,6 +24,8 @@ func main() {
 	themePath := flag.String("theme", "", "colors.toml to use instead of the desktop theme")
 	showPalette := flag.Bool("palette", false, "print the resolved palette and exit")
 	plain := flag.Bool("plain", false, "print once instead of opening the viewer")
+	frame := flag.Bool("frame", false, "print one viewer frame and exit (for screenshots)")
+	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
 
 	pal := resolvePalette(*themePath)
@@ -44,6 +46,10 @@ func main() {
 		}
 	}
 
+	if *frame {
+		fmt.Print(newViewer(title(flag.Args()), src, pal, *width, *height).View().Content)
+		return
+	}
 	if *plain || !term.IsTerminal(int(os.Stdout.Fd())) {
 		out, err := renderMarkdown(src, pal, *width)
 		if err != nil {
