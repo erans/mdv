@@ -118,8 +118,8 @@ func TestParseOSCColors(t *testing.T) {
 
 func TestTrimLineKeepsVisibleText(t *testing.T) {
 	cases := map[string]string{
-		"\x1b[38;2;1;2;3mheading\x1b[m   ":    "\x1b[38;2;1;2;3mheading",
-		"\x1b[38;2;1;2;3m │ a │ \x1b[m   ":     "\x1b[38;2;1;2;3m │ a │",
+		"\x1b[38;2;1;2;3mheading\x1b[m   ":      "\x1b[38;2;1;2;3mheading",
+		"\x1b[38;2;1;2;3m │ a │ \x1b[m   ":      "\x1b[38;2;1;2;3m │ a │",
 		"\x1b[38;2;1;2;3m\x1b[m \x1b[m \x1b[m ": "",
 	}
 	for in, want := range cases {
