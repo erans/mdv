@@ -4,11 +4,30 @@ Terminal markdown viewer: tables, mermaid diagrams as box art, images where the
 terminal can paint them, colored by the desktop's theme.
 
 ```
-mdv README.md          # render a file
-mdv -w 100 README.md   # fixed width
+mdv README.md          # open the viewer
+mdv -w 100 README.md   # open it at a fixed width
 cat x.md | mdv         # stdin
+mdv -plain README.md   # print once, no viewer (also what pipes get)
 mdv -palette           # show the resolved palette
 ```
+
+## Viewer
+
+Full screen, the last column is the scrollbar: the thumb shows how far you
+are, and the footer shows the percentage and current line.
+
+| Input | Does |
+|---|---|
+| wheel, `j`/`k`, `↑`/`↓` | scroll a line (wheel moves three) |
+| click / drag the scrollbar | jump, or scrub |
+| click a link | opens it with `xdg-open` (`open` on macOS) |
+| `d`/`u`, `space`, `PgUp`/`PgDn` | half a page |
+| `g`/`G`, `Home`/`End` | top, bottom |
+| `q`, `Esc`, `Ctrl+C` | quit |
+
+Clicking a link inside the viewer works even though the terminal hands its
+clicks to the app: the renderer keeps its OSC 8 hyperlinks, and the viewer
+recovers each link's columns from that output to hit-test the click.
 
 ## Theme
 
@@ -30,6 +49,7 @@ foreground, and the six hues), never against hex literals.
 ## Status
 
 - [x] markdown, tables, syntax highlighting, hyperlinks
+- [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
 - [ ] mermaid diagrams (all six types) as box art
 - [ ] images via kitty graphics / iTerm2 / sixel, halfblock fallback
 

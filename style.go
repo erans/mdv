@@ -18,6 +18,8 @@ func (p Palette) StyleConfig() ansi.StyleConfig {
 	}
 
 	s.Document.Color = sp(p.Fg)
+	s.Document.BlockPrefix = "" // no blank first line in the viewer
+	s.Document.BlockSuffix = ""
 	s.Document.Margin = upp(0)
 	s.Text.Color = nil // inherit the document color
 	s.Document.BackgroundColor = nil

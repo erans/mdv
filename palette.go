@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -199,6 +200,15 @@ func blend(a, b string, t float64) string {
 	}
 	mix := func(x, y int) int { return int(float64(x)*(1-t) + float64(y)*t) }
 	return "#" + hex2(mix(ar, br)) + hex2(mix(ag, bg)) + hex2(mix(ab, bb))
+}
+
+// paint wraps s in a truecolor foreground escape.
+func paint(hex, s string) string {
+	r, g, b, ok := parseHex(hex)
+	if !ok {
+		return s
+	}
+	return fmt.Sprintf("\x1b[38;2;%d;%d;%dm%s\x1b[m", r, g, b, s)
 }
 
 func hex2(v int) string {
