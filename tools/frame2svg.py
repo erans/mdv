@@ -25,7 +25,7 @@ def runs(line):
     SGR colours arrive in both forms: `38;2;r;g;b` (semicolon separated) and
     `38:2:r:g:b` (colon separated, what recent terminal libraries emit).
     """
-    out, fg, bg, bold, under, i = [], None, None, False, False, 0
+    out, fg, bg, bold, under, inverse, i = [], None, None, False, False, False, 0
     while i < len(line):
         m = SGR.match(line, i)
         if m:
@@ -50,12 +50,17 @@ def runs(line):
                 elif n == 0:
                     fg = bg = None
                     bold = under = False
+                    inverse = False
                 elif n == 1:
                     bold = True
                 elif n == 4:
                     under = True
                 elif n in (22, 23, 24, 25, 27, 28, 29):
                     bold = under = False
+                elif n == 7:
+                    inverse = True
+                elif n == 27:
+                    inverse = False
                 elif n == 39:
                     fg = None
                 elif n == 49:
@@ -69,7 +74,10 @@ def runs(line):
             continue
         j = min([x for x in (line.find("\x1b", i), len(line)) if x >= 0])
         j = j if j > i else i + 1
-        out.append((line[i:j], fg, bg, bold, under))
+        if inverse:  # reverse video: swap, falling back to the panel colours
+            out.append((line[i:j], bg or BG, fg or FG, bold, under))
+        else:
+            out.append((line[i:j], fg, bg, bold, under))
         i = j
     return out
 
@@ -99,13 +107,16 @@ def main():
             attrs = ""
             if fg:
                 attrs += f' fill="{fg}"'
-            if bg:
-                attrs += f' style="background:{bg}"'
             if bold:
                 attrs += ' font-weight="600"'
             if under:
                 attrs += ' text-decoration="underline"'
             width = cells(text)
+            if bg:  # background colour: a rect behind the run, not a CSS style
+                body.append(
+                    f'<rect x="{PAD + col * CW:.1f}" y="{y - LH * 0.78:.1f}" '
+                    f'width="{width * CW:.1f}" height="{LH:.1f}" fill="{bg}"/>'
+                )
             # Block characters are drawn as rectangles: a glyph would leave
             # gaps between rows instead of forming a solid scrollbar.
             if set(text) <= {"\u2588", "\u2580", "\u2502"}:

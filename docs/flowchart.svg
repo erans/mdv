@@ -318,6 +318,6 @@
 <text x="16.0" y="856.4" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">┌───────────────────────────────────┬───────────────────────────────────────────────┐</text>
 <rect x="735.9" y="841.8" width="1.4" height="18.8" fill="#414868"/>
 <text x="16.0" y="875.2" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">flowchart.md</text>
-<text x="117.1" y="875.2" textLength="480.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                         </text>
-<text x="597.5" y="875.2" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">0%  45/61  q quit</text>
+<text x="117.1" y="875.2" textLength="337.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                        </text>
+<text x="454.3" y="875.2" textLength="286.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">0%  45/61  q quit  / search  t toc</text>
 </svg>

@@ -17,7 +17,8 @@
 <text x="16.0" y="124.8" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
 <rect x="732.4" y="110.2" width="8.4" height="18.8" fill="#7aa2f7"/>
 <text x="16.0" y="143.6" textLength="387.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#a9b1d6">Colors come from the active Omarchy theme, so </text>
-<text x="403.7" y="143.6" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#eb927b" style="background:#292e42">mdv</text>
+<rect x="403.7" y="128.9" width="25.3" height="18.8" fill="#292e42"/>
+<text x="403.7" y="143.6" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#eb927b">mdv</text>
 <text x="429.0" y="143.6" textLength="151.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#a9b1d6"> matches your bar,</text>
 <text x="580.7" y="143.6" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#a9b1d6"> your </text>
 <text x="631.2" y="143.6" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#a9b1d6">terminal and</text>
@@ -202,6 +203,6 @@
 <text x="471.1" y="575.0" textLength="261.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                               </text>
 <rect x="735.9" y="560.4" width="1.4" height="18.8" fill="#414868"/>
 <text x="16.0" y="593.8" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">screenshot.md</text>
-<text x="125.6" y="593.8" textLength="472.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                        </text>
-<text x="597.5" y="593.8" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">0%  30/37  q quit</text>
+<text x="125.6" y="593.8" textLength="328.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                       </text>
+<text x="454.3" y="593.8" textLength="286.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">0%  30/37  q quit  / search  t toc</text>
 </svg>

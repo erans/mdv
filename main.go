@@ -28,6 +28,8 @@ func main() {
 	plain := flag.Bool("plain", false, "print once instead of opening the viewer")
 	frame := flag.Bool("frame", false, "print one viewer frame and exit (for screenshots)")
 	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
+	frameTOC := flag.Bool("toc", false, "open the table of contents in the printed frame")
+	frameFind := flag.String("find", "", "search for this text in the printed frame")
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
 
@@ -60,7 +62,16 @@ func main() {
 	}
 
 	if *frame {
-		fmt.Print(newViewer(title(flag.Args()), src, pal, opts, *width, *height).View().Content)
+		v := newViewer(title(flag.Args()), src, pal, opts, *width, *height)
+		if *frameTOC && !v.tocOpen {
+			v.toggleTOC()
+		}
+		if *frameFind != "" {
+			v.query = *frameFind
+			v.runSearch()
+			v.searchJump(0)
+		}
+		fmt.Print(v.View().Content)
 		return
 	}
 	if *plain || !term.IsTerminal(int(os.Stdout.Fd())) {

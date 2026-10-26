@@ -75,7 +75,23 @@ mdv -theme my.toml x.md  # use a specific colors.toml
 | click a link | open it with `xdg-open` (`open` on macOS) |
 | `d`/`u`, `space`, `PgUp`/`PgDn` | half a page |
 | `g`/`G`, `Home`/`End` | top, bottom |
-| `q`, `Esc`, `Ctrl+C` | quit |
+| `/` then text | search; `enter` jumps, `n`/`N` step, `esc` clears |
+| `t` | table of contents pane; `j`/`k` move, `enter`/click jumps |
+| `q`, `Esc`, `Ctrl+C` | quit (`Esc` first closes search or the pane) |
+
+## Finding your way
+
+![mdv's table of contents and search](docs/viewer.svg)
+
+`/` opens a prompt in the footer; the count updates as you type, and every match
+on screen is drawn with the theme's accent behind it. `enter` jumps to the first
+one, `n` and `N` walk the rest, `esc` clears the search.
+
+`t` opens the contents pane on the right: headings indented by level, the
+section you are reading in `accent`, the selected row in `selection`. `j`/`k`
+move, `enter` or a click jumps, and the document re-wraps to the narrower width
+so nothing is cut off. Both features work on the rendered text, so nothing in
+the markdown has to be annotated for them to work.
 
 ## Theme
 
@@ -254,6 +270,7 @@ Done:
 
 - [x] markdown, tables, syntax highlighting, hyperlinks
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
+- [x] viewer: `/` search with highlights, `t` table-of-contents pane
 - [x] Omarchy palettes, terminal queries, built-in fallback
 - [x] own table renderer: wrapped cells, themed borders, nothing clipped
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
@@ -264,7 +281,6 @@ Done:
 
 Next:
 
-- [ ] `/` search and a table-of-contents pane in the viewer
 - [ ] mermaid `gantt` and `pie`
 - [ ] image cell size queried from the terminal instead of assumed
 

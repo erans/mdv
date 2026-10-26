@@ -24,4 +24,9 @@ shot models     96 33 testdata/models.md
 ./mdv -frame -images halfblock -w 76 -h 24 testdata/imgdemo.md | python3 tools/frame2svg.py >docs/images.svg
 echo "docs/images.svg  <- testdata/imgdemo.md"
 
+# The viewer screenshot also needs the table of contents open and a live search.
+./mdv -frame -toc -find heading -w 84 -h 22 -theme "$theme" testdata/viewer.md \
+	| python3 tools/frame2svg.py >docs/viewer.svg
+echo "docs/viewer.svg  <- testdata/viewer.md (toc + search)"
+
 rm -f ./mdv

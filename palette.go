@@ -211,6 +211,26 @@ func paint(hex, s string) string {
 	return fmt.Sprintf("\x1b[38;2;%d;%d;%dm%s\x1b[m", r, g, b, s)
 }
 
+// paintOn draws text with an explicit background and foreground, for highlights
+// and selected rows: reverse video over themed colours is unreadable.
+func paintOn(bgHex, fgHex, s string) string {
+	open := paintOpen(bgHex, fgHex)
+	if open == "" {
+		return s
+	}
+	return open + s + "\x1b[39;49m"
+}
+
+// paintOpen is the opening half of paintOn, for text that must stay styled.
+func paintOpen(bgHex, fgHex string) string {
+	br, bg, bb, ok1 := parseHex(bgHex)
+	fr, fg, fb, ok2 := parseHex(fgHex)
+	if !ok1 || !ok2 {
+		return ""
+	}
+	return fmt.Sprintf("\x1b[38;2;%d;%d;%d;48;2;%d;%d;%dm", fr, fg, fb, br, bg, bb)
+}
+
 func hex2(v int) string {
 	const digits = "0123456789abcdef"
 	return string([]byte{digits[(v>>4)&0xf], digits[v&0xf]})
