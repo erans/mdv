@@ -4,14 +4,10 @@
 
 ![mdv rendering a README](docs/screenshot.svg)
 
-## Screenshots
-
-| The viewer | Graphs and flowcharts |
-| --- | --- |
-| [![mdv rendering a README](docs/screenshot.svg)](docs/screenshot.svg) | [![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)](docs/flowchart.svg) |
-
-Both images are renders of real viewer frames, not mockups: `mdv -frame` prints
-one frame and `tools/frame2svg.py` turns it into an SVG.
+Both screenshots in this file — this one and the
+[graphs and flowcharts](#mermaid) one further down — are renders of real viewer
+frames, not mockups: `mdv -frame` prints one frame and `tools/frame2svg.py`
+turns it into an SVG.
 
 Your terminal already has a theme. Your bar, your editor and your file manager
 already match it. Then you `cat README.md` and get a wall of plain text with a
