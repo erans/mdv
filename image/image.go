@@ -72,12 +72,22 @@ type Block struct {
 	Rows int
 }
 
-const (
-	// Cell pixel size assumed when the terminal does not say. Only the ratio
-	// matters for aspect correction.
-	defaultCellW = 10
-	defaultCellH = 20
+// Cell pixel size. The terminal is asked at startup; 10x20 is the assumption
+// when it does not answer. Only the ratio affects how an image is laid out.
+var (
+	cellW, cellH = 10, 20
 )
+
+// SetCellSize records the terminal's cell geometry, ignoring values that are
+// plainly wrong.
+func SetCellSize(w, h int) {
+	if w >= 3 && w <= 80 && h >= 6 && h <= 160 {
+		cellW, cellH = w, h
+	}
+}
+
+// CellSize is the geometry in use, in pixels.
+func CellSize() (w, h int) { return cellW, cellH }
 
 // Render paints the image at path into cols columns. maxRows caps the height;
 // zero means only the width limits it.
@@ -107,7 +117,7 @@ func Render(path string, proto Protocol, cols, maxRows int) (Block, error) {
 	case ITerm2:
 		return Block{Text: encodeITerm2(pngBase64(img), cols, rows) + reserve(rows), Rows: rows}, nil
 	case Sixel:
-		return Block{Text: encodeSixel(resize(img, cols*defaultCellW, rows*defaultCellH)) + reserve(rows), Rows: rows}, nil
+		return Block{Text: encodeSixel(resize(img, cols*cellW, rows*cellH)) + reserve(rows), Rows: rows}, nil
 	default:
 		lines := halfblocks(resize(img, cols, rows*2))
 		return Block{Text: strings.Join(lines, "\n") + "\n", Rows: rows}, nil
@@ -121,12 +131,12 @@ func reserve(rows int) string {
 }
 
 func rowsFor(w, h, cols int) int {
-	rows := float64(cols) * float64(defaultCellW) / float64(defaultCellH) * float64(h) / float64(w)
+	rows := float64(cols) * float64(cellW) / float64(cellH) * float64(h) / float64(w)
 	return max(1, int(rows+0.5))
 }
 
 func colsFor(w, h, rows int) int {
-	cols := float64(rows) * float64(defaultCellH) / float64(defaultCellW) * float64(w) / float64(h)
+	cols := float64(rows) * float64(cellH) / float64(cellW) * float64(w) / float64(h)
 	return max(1, int(cols+0.5))
 }
 
@@ -169,7 +179,7 @@ func encodeKitty(data string, cols, rows int) string {
 }
 
 func encodeITerm2(data string, cols, rows int) string {
-	w, h := cols*defaultCellW, rows*defaultCellH
+	w, h := cols*cellW, rows*cellH
 	return fmt.Sprintf("\x1b]1337;File=inline=1;size=%d;width=%dpx;height=%dpx;preserveAspectRatio=1:%s\x07",
 		len(data)*3/4, w, h, data)
 }

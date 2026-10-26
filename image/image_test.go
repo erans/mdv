@@ -159,3 +159,38 @@ func first(s string, n int) string {
 	}
 	return s[:n]
 }
+
+func TestCellSizeOverride(t *testing.T) {
+	oldW, oldH := CellSize()
+	defer SetCellSize(oldW, oldH)
+
+	path := writePNG(t, 100, 100)
+	SetCellSize(10, 20)
+	square := func() int {
+		b, err := Render(path, Kitty, 40, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return b.Rows
+	}
+	// A square image across 40 columns: cells twice as tall as wide stack two
+	// pixel rows per cell, so 40 columns need 20 rows; square cells need 40.
+	wide := square()
+	SetCellSize(10, 10)
+	squareCells := square()
+	if wide != 20 || squareCells != 40 {
+		t.Errorf("rows = %d with 10x20 cells and %d with 10x10, want 20 and 40", wide, squareCells)
+	}
+}
+
+func TestSetCellSizeRejectsNonsense(t *testing.T) {
+	oldW, oldH := CellSize()
+	defer SetCellSize(oldW, oldH)
+	SetCellSize(10, 20)
+	for _, c := range [][2]int{{0, 0}, {-4, 20}, {10, 500}, {200, 20}} {
+		SetCellSize(c[0], c[1])
+		if w, h := CellSize(); w != 10 || h != 20 {
+			t.Errorf("SetCellSize(%d,%d) changed the cell to %dx%d", c[0], c[1], w, h)
+		}
+	}
+}

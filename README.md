@@ -229,6 +229,12 @@ at the width of the pane:
 blocks inside the viewer, where scrolling redraws every line and a one-shot
 graphics escape would be painted twice. Piping gets the protocol.
 
+The cell size behind that arithmetic is asked for, not assumed: `CSI 16 t`, then
+iTerm2's `ReportCellSize`, then the text area from `CSI 14 t` divided by the
+grid, and 10x20 px only if a terminal answers nothing. The same round trip
+fetches the palette, so it costs one bounded read at startup and only when the
+document actually contains an image.
+
 ## How it works
 
 - Markdown → ANSI is [glamour](https://github.com/charmbracelet/glamour), so
@@ -261,8 +267,6 @@ graphics escape would be painted twice. Piping gets the protocol.
 - An edge label can end up touching a box corner when the gap is tight.
 - Only local images are painted: `![](https://…)` stays alt text, and an image
   sharing a paragraph with text is left to the markdown renderer.
-- Cell size is assumed (10x20 px) when computing how many rows an image takes,
-  so a picture can come out a row taller or shorter than its box needs.
 
 ## Status
 
@@ -282,7 +286,7 @@ Done:
 Next:
 
 - [ ] mermaid `gantt` and `pie`
-- [ ] image cell size queried from the terminal instead of assumed
+- [ ] a `--toc` flag to open the contents pane on start
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the table layout, the mermaid layouts, the image

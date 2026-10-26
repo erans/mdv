@@ -54,6 +54,14 @@ func main() {
 		fmt.Fprintln(os.Stderr, "mdv:", err)
 		os.Exit(1)
 	}
+	// Ask the terminal how big a cell is before anything is measured against it;
+	// changing it later would change every image's row count.
+	if images != image.Off && strings.Contains(src, "![") {
+		if p := probeTerminal(); p.answered {
+			image.SetCellSize(p.cellW, p.cellH)
+		}
+	}
+
 	if *width == 0 {
 		*width = 80
 		if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil && w > 0 {

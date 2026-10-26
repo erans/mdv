@@ -148,14 +148,13 @@ func builtinPalette() Palette {
 	}
 }
 
-// loadTerminal asks the terminal for its background, foreground and the six
-// ANSI hues, then keeps whatever it answered. One write, one read: 16 separate
-// OSC 4 round trips are not worth the latency.
+// loadTerminal builds a palette from the colours the terminal reported.
 func loadTerminal() (Palette, bool) {
-	ans, ok := queryTerminal([]int{10, 11, 4})
-	if !ok {
+	probed := probeTerminal()
+	if !probed.answered || len(probed.colors) == 0 {
 		return Palette{}, false
 	}
+	ans := probed.colors
 	p := builtinPalette()
 	p.Name = "terminal"
 	p.Bg, p.Fg = ans[11], ans[10]
