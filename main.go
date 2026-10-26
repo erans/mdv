@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"mdv/mermaid"
+	"github.com/erans/mdv/mermaid"
 	"regexp"
 	"strings"
 	"unicode/utf8"

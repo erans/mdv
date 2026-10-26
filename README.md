@@ -4,6 +4,15 @@
 
 ![mdv rendering a README](docs/screenshot.svg)
 
+## Screenshots
+
+| The viewer | Graphs and flowcharts |
+| --- | --- |
+| [![mdv rendering a README](docs/screenshot.svg)](docs/screenshot.svg) | [![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)](docs/flowchart.svg) |
+
+Both images are renders of real viewer frames, not mockups: `mdv -frame` prints
+one frame and `tools/frame2svg.py` turns it into an SVG.
+
 Your terminal already has a theme. Your bar, your editor and your file manager
 already match it. Then you `cat README.md` and get a wall of plain text with a
 table that wraps into nonsense.
@@ -29,7 +38,9 @@ the theme you are already running**.
 ## Install
 
 ```sh
-go install ./...     # or: go build -o mdv .
+go install github.com/erans/mdv@latest    # needs Go 1.24+
+# or from a clone
+go build -o mdv .
 ```
 
 ## Use

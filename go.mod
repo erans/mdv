@@ -1,4 +1,4 @@
-module mdv
+module github.com/erans/mdv
 
 go 1.26.8
 
