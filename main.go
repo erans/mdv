@@ -28,11 +28,20 @@ func main() {
 	plain := flag.Bool("plain", false, "print once instead of opening the viewer")
 	frame := flag.Bool("frame", false, "print one viewer frame and exit (for screenshots)")
 	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
+	configFlag := flag.String("config", "", "config file to read instead of ~/.config/mdv/config.json")
 	openTOC := flag.Bool("toc", false, "open the table of contents on start")
 	frameFind := flag.String("find", "", "search for this text in the printed frame")
 	frameHScroll := flag.Int("hscroll", 0, "scroll this many columns sideways in the printed frame")
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
+
+	set := map[string]bool{}
+	flag.Visit(func(f *flag.Flag) { set[f.Name] = true })
+	if cfg, err := loadConfig(configPath(*configFlag)); err != nil {
+		fmt.Fprintln(os.Stderr, "mdv: config:", err)
+	} else {
+		applyConfig(cfg, set, openTOC, imagesFlag, themePath, width)
+	}
 
 	pal := resolvePalette(*themePath)
 	if *showPalette {

@@ -69,6 +69,7 @@ mdv --toc README.md      # start with the contents pane open
 | `-frame`, `-h` | print one viewer frame of `-h` rows and exit (screenshots, tests) |
 | `-images MODE` | `auto` (default), `kitty`, `iterm2`, `sixel`, `halfblock`, `off` |
 | `--toc` | open the contents pane on start (same as pressing `t`) |
+| `-config PATH` | read another config file than `~/.config/mdv/config.json` |
 
 | Input | Does |
 | --- | --- |
@@ -81,6 +82,25 @@ mdv --toc README.md      # start with the contents pane open
 | `H`/`L`, `0` | scroll sideways when a diagram is wider than the pane, and back |
 | `t` | table of contents pane; `j`/`k` move, `enter`/click jumps |
 | `q`, `Esc`, `Ctrl+C` | quit (`Esc` first closes search or the pane) |
+
+## Config file
+
+Flags you type every time can live in `~/.config/mdv/config.json` (or
+`$XDG_CONFIG_HOME/mdv/config.json`):
+
+```json
+{
+  "toc": true,
+  "images": "kitty",
+  "width": 100,
+  "theme": "~/themes/mine.toml"
+}
+```
+
+Only the keys you write are applied, `~` is expanded, and **the command line
+always wins**: `-toc=false` beats `"toc": true`. A missing file is normal and
+silent; a malformed one prints a warning and mdv starts with your flags instead
+of refusing to run.
 
 ## Finding your way
 
@@ -309,12 +329,13 @@ Done:
 - [x] mermaid sequence, state, class and ER diagrams
 - [x] mermaid `pie`, `gantt`, `journey` and `mindmap`
 - [x] sideways scrolling for diagrams wider than the pane
+- [x] config file for the flags you always type
 - [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
 
-- [ ] a config file, so `--toc` and `-images` do not have to be typed every time
+- [ ] a `man` page and shell completions
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the table layout, the mermaid layouts, the image
