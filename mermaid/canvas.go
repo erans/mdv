@@ -77,6 +77,26 @@ func (c *canvas) write(x, y int, s string) {
 	}
 }
 
+// frameRow and frameCol report whether a line of a subgraph frame runs there,
+// so an edge label never lands on a frame border.
+func (c *canvas) frameRow(y int) bool {
+	for _, sg := range c.g.subgraphs {
+		if y == sg.y0 || y == sg.y1 {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *canvas) frameCol(x int) bool {
+	for _, sg := range c.g.subgraphs {
+		if x == sg.x0 || x == sg.x1 {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *canvas) blank(x, y, n int) bool {
 	for i := 0; i < n; i++ {
 		if x+i < 0 || x+i >= c.w || y < 0 || y >= c.h {

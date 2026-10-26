@@ -4,7 +4,7 @@
 
 ![mdv rendering a README](docs/screenshot.svg)
 
-Both screenshots in this file — this one and the
+Both screenshots here — this one and the
 [graphs and flowcharts](#mermaid) one further down — are renders of real viewer
 frames, not mockups: `mdv -frame` prints one frame and `tools/frame2svg.py`
 turns it into an SVG.
@@ -14,19 +14,20 @@ already match it. Then you `cat README.md` and get a wall of plain text with a
 table that wraps into nonsense.
 
 `mdv` renders the README properly — headings, tables that fit the pane,
-highlighted code, clickable links, a scrollbar you can drag — **in the colors of
-the theme you are already running**.
+highlighted code, mermaid diagrams drawn as box art, clickable links, a
+scrollbar you can drag — **in the colors of the theme you are already running**.
 
 ## Why this one
 
 - **It reads your theme, it does not ship one.** On Omarchy that means the exact
-  palette your desktop is wearing, `accent` on headings and links, `muted` on
+  palette your desktop is wearing: `accent` on headings and links, `muted` on
   borders, `selection` behind inline code. Change the theme, `mdv` changes with
   it. No config file, no `--style` flag to remember.
-- **Tables that behave.** Wide tables shrink their columns, wrap their cells and
-  keep their borders. Narrow terminals get wrapped text, not truncated words.
-- **Links you can actually click.** Terminals hand clicks to the app, so a
-  plain hyperlink would never fire inside a full-screen viewer. `mdv` keeps the
+- **Diagrams are drawn, not printed.** A mermaid `graph`, `flowchart` or
+  `subgraph` becomes box art in the flow of the document, with its shapes,
+  labels, dashed edges and titled frames intact.
+- **Links you can actually click.** Terminals hand clicks to the app, so a plain
+  hyperlink would never fire inside a full-screen viewer. `mdv` recovers the
   link spans from the rendered output and opens the one you clicked.
 - **A scrollbar with a position, not a guess.** Thumb on the right edge, and a
   footer that says `42%` and `118/254` so you know where you are.
@@ -50,8 +51,16 @@ mdv -palette             # show the resolved palette and exit
 mdv -theme my.toml x.md  # use a specific colors.toml
 ```
 
+| Flag | Does |
+| --- | --- |
+| `-w` | wrap width in columns (default: terminal width) |
+| `-theme FILE` | a `colors.toml` to use instead of the desktop theme |
+| `-plain` | print once instead of opening the viewer; automatic when not a TTY |
+| `-palette` | print the resolved palette and exit |
+| `-frame`, `-h` | print one viewer frame of `-h` rows and exit (screenshots, tests) |
+
 | Input | Does |
-|---|---|
+| --- | --- |
 | wheel, `j`/`k`, `↑`/`↓` | scroll a line (the wheel moves three) |
 | click or drag the scrollbar | jump, or scrub through the document |
 | click a link | open it with `xdg-open` (`open` on macOS) |
@@ -74,7 +83,8 @@ terminal is only a window onto someone else's desktop, so the remote theme
 decides the colors — and whether the result is light or dark.
 
 Everything renders against twelve palette roles (`accent`, `muted`, `selection`,
-`foreground` and six hues). No hex literals below `style.go`.
+`foreground` and six hues). `palette.go` is the only file that holds hex
+values; the renderers speak role names.
 
 ## Mermaid
 
@@ -82,8 +92,8 @@ Fences are drawn as box art, inline, in the flow of the document:
 
 ![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)
 
-Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square
-`[]`, rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
+Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square `[]`,
+rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
 `|labels|` or `-- labels -->`, chains (`A --> B --> C`), fan-out
 (`A --> B & C`) and `subgraph name[Title]` frames, nested ones included.
 
@@ -100,42 +110,50 @@ Every edge reserves its own lane in the gap it crosses, so two arrows between
 the same ranks never overlap, and a long edge swings around the boxes it skips
 instead of cutting through them. A frame is sized around its members after the
 layout, and a node that would fall inside somebody else's frame is pushed out
-of it rather than enclosed by mistake. A diagram too wide for the pane, or a type the
-renderer does not know, is printed as source — never clipped.
+of it rather than enclosed by mistake. A diagram too wide for the pane, or a
+type the renderer does not know, is printed as source — never clipped.
 
 Sequence, state, class and ER diagrams are next.
 
 ## How it works
 
 - Markdown → ANSI is [glamour](https://github.com/charmbracelet/glamour), so
-  text, code and syntax highlighting are not reinvented here.
-- Mermaid fences are cut out of the document before glamour sees them, drawn
-  by `mermaid.Render`, and spliced back in. Every edge reserves its own lane in
-  the gap it crosses, so two arrows between the same ranks never overlap.
+  text, tables, code and syntax highlighting are not reinvented here.
+- Mermaid fences are cut out of the document before glamour sees them, drawn by
+  the `mermaid` package, and spliced back in.
 - The viewer is [bubbletea](https://github.com/charmbracelet/bubbletea), with a
   hand-drawn scrollbar and footer.
 - Link spans are recovered by walking the rendered lines and counting visible
   columns while skipping SGR and OSC sequences, so a click maps to exactly the
   characters the terminal drew.
-- `-frame` prints one viewer frame; `tools/frame2svg.py` turns it into the SVG
-  screenshot at the top of this file:
+- `-frame` prints one viewer frame; `tools/frame2svg.py` turns it into an SVG:
 
   ```sh
   go build -o mdv .
-  ./mdv -frame -w 86 -h 26 -theme testdata/tokyo-night.toml testdata/screenshot.md \
-    | python3 tools/frame2svg.py > docs/screenshot.svg
+  ./mdv -frame -w 86 -h 46 -theme testdata/tokyo-night.toml testdata/flowchart.md \
+    | python3 tools/frame2svg.py > docs/flowchart.svg
   ```
+
+## Known limits
+
+- glamour truncates a table cell when the table lands exactly on the wrap
+  width. An own table renderer is the next piece of work.
+- A decision node (`{}`) is drawn as a `╱──╲` frame, not a true diamond.
+- `direction` inside a `subgraph` is ignored; frames follow the diagram.
+- Fences inside a list item or blockquote stay a code block.
+- An edge label can end up touching a box corner when the gap is tight.
+- Images are not painted yet; an image renders as its alt text.
 
 ## Status
 
 - [x] markdown, tables, syntax highlighting, hyperlinks
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
 - [x] Omarchy palettes, terminal queries, built-in fallback
-- [ ] own table renderer (glamour truncates cells at the wrap boundary)
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
+- [ ] own table renderer, for the boundary case above
 - [ ] mermaid sequence, state, class and ER diagrams
 - [ ] inline images via kitty graphics, iTerm2 and sixel
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
-recovery, the scrollbar math and the frame layout.
+recovery, the scrollbar math, the diagram layout and the frame layout.

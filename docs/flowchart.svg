@@ -16,9 +16,9 @@
 <text x="24.4" y="106.0" textLength="75.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> pipeline</text>
 <text x="100.3" y="106.0" textLength="632.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                                                           </text>
 <rect x="732.4" y="91.4" width="8.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="124.8" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
-<text x="268.8" y="124.8" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">pass</text>
-<text x="302.6" y="124.8" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="16.0" y="124.8" textLength="244.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                             </text>
+<text x="260.4" y="124.8" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">pass</text>
+<text x="294.1" y="124.8" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">  </text>
 <text x="311.0" y="124.8" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">┌────────┐</text>
 <text x="395.3" y="124.8" textLength="337.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                        </text>
 <rect x="732.4" y="110.2" width="8.4" height="18.8" fill="#cdd6f4"/>
@@ -81,9 +81,9 @@
 <rect x="390.3" y="204.0" width="1.4" height="18.8" fill="#cdd6f4"/>
 <text x="395.3" y="218.6" textLength="337.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                        </text>
 <rect x="732.4" y="204.0" width="8.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="237.4" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
-<text x="268.8" y="237.4" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">fail</text>
-<text x="302.6" y="237.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="16.0" y="237.4" textLength="244.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                             </text>
+<text x="260.4" y="237.4" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">fail</text>
+<text x="294.1" y="237.4" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">  </text>
 <text x="311.0" y="237.4" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">└────────┘</text>
 <text x="395.3" y="237.4" textLength="337.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                        </text>
 <rect x="732.4" y="222.7" width="8.4" height="18.8" fill="#cdd6f4"/>

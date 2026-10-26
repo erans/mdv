@@ -907,32 +907,34 @@ func (c *canvas) edgeLabel(e *edge, lanes map[int]int, vertical bool) {
 		return
 	}
 	n := len([]rune(e.label))
+	lo := min(e.from.rank, e.to.rank)
+	var cands [][2]int
 	if vertical {
 		tx, ty := e.to.x+e.to.w/2, e.to.y-1
-		lo := min(e.from.rank, e.to.rank)
 		row := c.rowsAt(lo)[lanes[lo]]
-		for _, p := range [][2]int{
+		cands = [][2]int{
 			{tx + 2, ty}, {tx + 2, ty - 1}, {tx - n - 1, ty}, {tx + 2, row},
-			{tx + 2, ty - 2}, {tx + 2, row - 1}, {tx + 2, row + 1},
-		} {
+			{tx + 2, ty + 1}, {tx - n - 1, ty + 1}, {tx + 2, ty - 2}, {tx + 2, row - 1},
+		}
+	} else {
+		sy := e.from.y + 1
+		tx, ty := e.to.x-1, e.to.y+1
+		col := c.colsAt(lo)[lanes[lo]]
+		cands = [][2]int{
+			{col + 1, ty - 1}, {tx - n - 1, ty - 1}, {tx - n, ty - 1}, {col + 1, sy + 1},
+			{tx - n - 1, ty + 1}, {tx - n, ty + 1},
+			{col + 1, ty}, {tx - n, ty}, {col + 1, ty - 2}, {tx - n, ty + 2},
+		}
+	}
+	for _, strict := range []bool{true, false} { // avoid frame borders, then settle
+		for _, p := range cands {
+			if strict && (c.frameRow(p[1]) || (!vertical && c.frameCol(p[0]))) {
+				continue
+			}
 			if c.blank(p[0], p[1], n) {
 				c.write(p[0], p[1], e.label)
 				return
 			}
-		}
-		return
-	}
-	_, sy := e.from.x, e.from.y+1
-	tx, ty := e.to.x-1, e.to.y+1
-	lo := min(e.from.rank, e.to.rank)
-	col := c.colsAt(lo)[lanes[lo]]
-	for _, p := range [][2]int{
-		{col + 1, ty - 1}, {tx - n, ty - 1}, {col + 1, sy + 1}, {tx - n, ty + 1},
-		{col + 1, ty}, {tx - n, ty}, {col + 1, ty - 2},
-	} {
-		if c.blank(p[0], p[1], n) {
-			c.write(p[0], p[1], e.label)
-			return
 		}
 	}
 }
