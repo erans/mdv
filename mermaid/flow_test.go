@@ -116,7 +116,7 @@ func TestArtIsTrimmedAndBounded(t *testing.T) {
 }
 
 func TestUnsupportedSourceIsAnError(t *testing.T) {
-	for _, src := range []string{"journey\n  title x\n", "mindmap\n  root\n", "hello world\n"} {
+	for _, src := range []string{"timeline\n  title x\n", "quadrantChart\n  title x\n", "hello world\n"} {
 		if _, err := Render(src); err == nil {
 			t.Errorf("%q should report an error so the caller shows the source", src)
 		}

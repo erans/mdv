@@ -24,6 +24,10 @@ func Render(src string) (*Art, error) {
 		return renderPie(src)
 	case "gantt":
 		return renderGantt(src)
+	case "journey":
+		return renderJourney(src)
+	case "mindmap":
+		return renderMindmap(src)
 	}
 	return nil, errors.New("unsupported diagram type")
 }
@@ -58,6 +62,10 @@ func kind(src string) string {
 			return "pie"
 		case strings.HasPrefix(low, "gantt"):
 			return "gantt"
+		case strings.HasPrefix(low, "journey"):
+			return "journey"
+		case strings.HasPrefix(low, "mindmap"):
+			return "mindmap"
 		}
 		return ""
 	}

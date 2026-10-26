@@ -123,7 +123,8 @@ Fences are drawn as box art, inline, in the flow of the document:
 ![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)
 
 Every type `mdv` knows is drawn: `graph`/`flowchart`, `sequenceDiagram`,
-`stateDiagram-v2`, `classDiagram`, `erDiagram`, `pie` and `gantt`.
+`stateDiagram-v2`, `classDiagram`, `erDiagram`, `pie`, `gantt`, `journey` and
+`mindmap`.
 
 For flowcharts: `LR`, `RL`, `TD` and `TB`, square `[]`, rounded `()` and
 decision `{}` nodes, `-->` `---` `-.->` `==>` edges with `|labels|` or
@@ -160,6 +161,8 @@ a diagram type the renderer does not know prints its source in both modes.
 | [![mdv drawing a mermaid sequence diagram and a state diagram](docs/sequence.svg)](docs/sequence.svg) | [![mdv drawing a mermaid class diagram and an entity relationship diagram](docs/models.svg)](docs/models.svg) |
 
 ![mdv drawing a mermaid pie chart and a gantt chart](docs/charts.svg)
+
+![mdv drawing a mermaid user journey and a mindmap](docs/people.svg)
 
 <details>
 <summary>The four sources behind those screenshots</summary>
@@ -229,6 +232,11 @@ erDiagram
 - **Gantt**: `section` headers, `done`/`active`/`crit` fills, milestones as `◆`,
   `after id` chains resolved to real dates, and a date axis over the whole span.
   Dates are `YYYY-MM-DD`; `dateFormat`/`axisFormat` are ignored.
+- **Journey**: a section per phase, a five-cell score bar per step, and the
+  actors beside it.
+- **Mindmap**: an indented tree with box-drawing connectors. Shape wrappers
+  (`root((text))`, `id[text]`), `::icon(...)` and `<br/>` are handled; the
+  branches are drawn as a tree rather than curved around a centre.
 
 ## Images
 
@@ -299,14 +307,13 @@ Done:
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [x] mermaid sequence, state, class and ER diagrams
-- [x] mermaid `pie` and `gantt` charts
+- [x] mermaid `pie`, `gantt`, `journey` and `mindmap`
 - [x] sideways scrolling for diagrams wider than the pane
 - [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
 
-- [ ] mermaid `journey` and `mindmap`
 - [ ] a config file, so `--toc` and `-images` do not have to be typed every time
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
