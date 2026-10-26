@@ -186,3 +186,41 @@ func TestSearchPromptShowsCounts(t *testing.T) {
 		t.Errorf("footer without matches = %q", footer)
 	}
 }
+
+// -toc has to work for the interactive viewer too, not only for -frame.
+func TestShowTOCOpensThePane(t *testing.T) {
+	v := newViewer("doc.md", tocDoc, builtinPalette(), renderOpts{images: image.Off}, 60, 10)
+	wide := v.contentW
+	v.showTOC()
+	if !v.tocOpen {
+		t.Fatal("-toc did not open the pane")
+	}
+	if v.contentW >= wide {
+		t.Errorf("content width %d did not shrink from %d", v.contentW, wide)
+	}
+	if v.tocSel != 0 {
+		t.Errorf("selection starts at %d, want the first heading", v.tocSel)
+	}
+	if got := plainView(v); !strings.Contains(got, "Second section") {
+		t.Errorf("pane is there but has no headings:\n%s", got)
+	}
+	v.showTOC() // idempotent: asking twice must not close it
+	if !v.tocOpen {
+		t.Error("calling showTOC again closed the pane")
+	}
+}
+
+func TestTOCWithoutHeadingsSaysSo(t *testing.T) {
+	v := newViewer("doc.md", "just a paragraph, no headings at all\n", builtinPalette(),
+		renderOpts{images: image.Off}, 60, 10)
+	v.showTOC()
+	if len(v.toc) != 0 {
+		t.Fatalf("toc = %+v, want none", v.toc)
+	}
+	if got := plainView(v); !strings.Contains(got, "no headings") {
+		t.Errorf("empty pane should say so:\n%s", got)
+	}
+	// Nothing to select, and jumping must not panic.
+	send(v, special(tea.KeyEnter))
+	send(v, key('j'), key('j'))
+}

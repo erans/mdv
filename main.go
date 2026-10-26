@@ -28,7 +28,7 @@ func main() {
 	plain := flag.Bool("plain", false, "print once instead of opening the viewer")
 	frame := flag.Bool("frame", false, "print one viewer frame and exit (for screenshots)")
 	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
-	frameTOC := flag.Bool("toc", false, "open the table of contents in the printed frame")
+	openTOC := flag.Bool("toc", false, "open the table of contents on start")
 	frameFind := flag.String("find", "", "search for this text in the printed frame")
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
@@ -71,8 +71,8 @@ func main() {
 
 	if *frame {
 		v := newViewer(title(flag.Args()), src, pal, opts, *width, *height)
-		if *frameTOC && !v.tocOpen {
-			v.toggleTOC()
+		if *openTOC {
+			v.showTOC()
 		}
 		if *frameFind != "" {
 			v.query = *frameFind
@@ -96,7 +96,11 @@ func main() {
 	if tw, th, err := term.GetSize(int(os.Stdout.Fd())); err == nil && tw > 0 && th > 0 {
 		w, h = tw, th
 	}
-	if _, err := tea.NewProgram(newViewer(title(flag.Args()), src, pal, opts, w, h)).Run(); err != nil {
+	viewer := newViewer(title(flag.Args()), src, pal, opts, w, h)
+	if *openTOC {
+		viewer.showTOC()
+	}
+	if _, err := tea.NewProgram(viewer).Run(); err != nil {
 		fmt.Fprintln(os.Stderr, "mdv:", err)
 		os.Exit(1)
 	}

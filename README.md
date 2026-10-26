@@ -57,6 +57,7 @@ cat x.md | mdv           # stdin
 mdv -plain README.md     # print once, no viewer (what pipes get anyway)
 mdv -palette             # show the resolved palette and exit
 mdv -theme my.toml x.md  # use a specific colors.toml
+mdv --toc README.md      # start with the contents pane open
 ```
 
 | Flag | Does |
@@ -67,6 +68,7 @@ mdv -theme my.toml x.md  # use a specific colors.toml
 | `-palette` | print the resolved palette and exit |
 | `-frame`, `-h` | print one viewer frame of `-h` rows and exit (screenshots, tests) |
 | `-images MODE` | `auto` (default), `kitty`, `iterm2`, `sixel`, `halfblock`, `off` |
+| `--toc` | open the contents pane on start (same as pressing `t`) |
 
 | Input | Does |
 | --- | --- |
@@ -87,10 +89,12 @@ mdv -theme my.toml x.md  # use a specific colors.toml
 on screen is drawn with the theme's accent behind it. `enter` jumps to the first
 one, `n` and `N` walk the rest, `esc` clears the search.
 
-`t` opens the contents pane on the right: headings indented by level, the
-section you are reading in `accent`, the selected row in `selection`. `j`/`k`
-move, `enter` or a click jumps, and the document re-wraps to the narrower width
-so nothing is cut off. Both features work on the rendered text, so nothing in
+`t` opens the contents pane on the right — or start with it already open using
+`mdv --toc README.md`. Headings are indented by level, the section you are
+reading is in `accent`, the selected row in `selection`. `j`/`k` move, `enter`
+or a click jumps, and the document re-wraps to the narrower width so nothing is
+cut off. A document with no headings says `no headings` instead of showing an
+empty column. Both features work on the rendered text, so nothing in
 the markdown has to be annotated for them to work.
 
 ## Theme
@@ -274,7 +278,7 @@ Done:
 
 - [x] markdown, tables, syntax highlighting, hyperlinks
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
-- [x] viewer: `/` search with highlights, `t` table-of-contents pane
+- [x] viewer: `/` search with highlights, `t` table-of-contents pane, `--toc` on start
 - [x] Omarchy palettes, terminal queries, built-in fallback
 - [x] own table renderer: wrapped cells, themed borders, nothing clipped
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
@@ -285,8 +289,7 @@ Done:
 
 Next:
 
-- [ ] mermaid `gantt` and `pie`
-- [ ] a `--toc` flag to open the contents pane on start
+- [ ] mermaid `gantt` and `pie` diagrams
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the table layout, the mermaid layouts, the image

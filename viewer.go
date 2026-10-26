@@ -311,6 +311,14 @@ func (v *viewer) searchKey(msg tea.KeyPressMsg) tea.Cmd {
 	return nil
 }
 
+// showTOC opens the contents pane if it is not open yet, which is what the
+// -toc flag asks for on start.
+func (v *viewer) showTOC() {
+	if !v.tocOpen {
+		v.toggleTOC()
+	}
+}
+
 // toggleTOC opens or closes the table of contents; the document has to be
 // re-rendered at the narrower width.
 func (v *viewer) toggleTOC() {
@@ -375,6 +383,12 @@ func (v *viewer) tocCell(row, page int) string {
 		return sep
 	}
 	i := v.tocOff + row
+	if len(v.toc) == 0 {
+		if row == 0 {
+			return sep + " " + paint(v.pal.Muted, ansi.Truncate("no headings", w-2, "…"))
+		}
+		return sep + strings.Repeat(" ", w)
+	}
 	if i < 0 || i >= len(v.toc) {
 		return sep + strings.Repeat(" ", w)
 	}
