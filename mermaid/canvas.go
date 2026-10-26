@@ -60,7 +60,7 @@ func (c *canvas) text(x, y int, s string, cl Class) {
 // putBlank writes text into the first run of empty cells at or right of x, so
 // a label never cuts through a line or a box.
 func (c *canvas) putBlank(x, y int, s string) {
-	for shift := 0; shift < 6; shift++ {
+	for shift := 0; shift < 14; shift++ {
 		start := x + shift
 		if c.blank(start, y, len([]rune(s))) {
 			for i, r := range []rune(s) {
@@ -79,7 +79,7 @@ func (c *canvas) write(x, y int, s string) {
 
 func (c *canvas) blank(x, y, n int) bool {
 	for i := 0; i < n; i++ {
-		if x+i >= c.w || y < 0 || y >= c.h {
+		if x+i < 0 || x+i >= c.w || y < 0 || y >= c.h {
 			return false
 		}
 		if ch := c.cells[y][x+i]; ch.Ch != ' ' && ch.Cl != EdgeLabel {

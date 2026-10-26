@@ -1,29 +1,34 @@
-# mdv
+# Graphs and flowcharts
 
-A terminal markdown viewer that renders like the desktop it runs on.
+A mermaid fence is drawn where it stands, in the flow of the document.
 
-## Mermaid fences are drawn, not printed
+## A pipeline
 
 ```mermaid
 graph LR
-  A[README.md] --> B{mermaid fence?}
-  B -->|yes| C[draw box art]
-  B -->|no| D[render markdown]
-  C --> E[your terminal]
-  D --> E
+  push --> build --> test
+  test -->|pass| deploy
+  test -->|fail| notify
 ```
 
-- shapes survive: `[]` square, `()` rounded, `{}` decision
-- edges keep their direction, weight and labels
-- a diagram that does not fit the pane is printed as source, never clipped
+## A decision tree
 
-## Viewer
+```mermaid
+flowchart TD
+  A[push to main] --> B[build]
+  B --> C{tests pass?}
+  C -->|yes| D[deploy]
+  C -->|no| E[notify the team]
+```
 
-| Input | Does |
+## Shapes, directions, weights
+
+| Fence | Draws |
 | --- | --- |
-| wheel, `j`/`k` | scroll a line, the wheel moves three |
-| click or drag the scrollbar | jump, or scrub through the document |
-| click a link | opens it with `xdg-open` |
+| `graph LR` | left to right |
+| `flowchart TD` | top to bottom |
+| `A[x]` `B(y)` `C{z}` | square, rounded, decision |
+| `-->` `---` `-.->` | arrow, line, dashed |
 
-> Clicking a link works even though the terminal hands the app its clicks:
-> the viewer recovers every link's columns from the rendered output.
+- edges keep their labels, and two edges between the same ranks never overlap
+- a diagram too wide for the pane is printed as source, never clipped

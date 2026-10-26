@@ -414,7 +414,7 @@ func (g *graph) placeVertical() {
 			x += n.w + 3
 		}
 		y += 3
-		gap := max(2, span[i])
+		gap := max(2, span[i]+1) // last row stays free for arrowheads
 		g.gapRows[i] = make([]int, 0, gap)
 		for k := 0; k < gap; k++ {
 			g.gapRows[i] = append(g.gapRows[i], y+k)
@@ -459,7 +459,7 @@ func (g *graph) placeHorizontal() {
 			width = max(width, n.w)
 		}
 		x += width
-		gap := max(3, span[i]+1)
+		gap := max(3, span[i]+2) // last column stays free for arrowheads
 		g.gapCols[i] = make([]int, 0, gap)
 		for k := 0; k < gap; k++ {
 			g.gapCols[i] = append(g.gapCols[i], x+k)
@@ -569,8 +569,8 @@ func (c *canvas) edgeVertical(e *edge, lanes map[int]int) {
 		first, last = last, first
 	}
 	if hi-lo == 1 {
-		if sx == tx {
-			v(sy, ty, sx)
+		if abs(sx-tx) <= 1 { // centres off by one: draw straight, avoid a jog
+			v(sy, ty, tx) // at the target's centre, where the arrow lands
 			return
 		}
 		v(sy, first, sx)
@@ -601,8 +601,8 @@ func (c *canvas) edgeHorizontal(e *edge, lanes map[int]int) {
 	first := cols(lo)[lanes[lo]]
 	last := cols(hi - 1)[lanes[hi-1]]
 	if hi-lo == 1 {
-		if sy == ty {
-			h(sx, tx, sy)
+		if abs(sy-ty) <= 1 {
+			h(sx, tx, ty)
 			return
 		}
 		h(sx, first, sy)
@@ -651,7 +651,10 @@ func (c *canvas) edgeLabel(e *edge, lanes map[int]int, vertical bool) {
 		tx, ty := e.to.x+e.to.w/2, e.to.y-1
 		lo := min(e.from.rank, e.to.rank)
 		row := c.rowsAt(lo)[lanes[lo]]
-		for _, p := range [][2]int{{tx + 2, ty}, {tx + 2, ty - 1}, {tx - n - 1, ty}, {tx + 2, row}} {
+		for _, p := range [][2]int{
+			{tx + 2, ty}, {tx + 2, ty - 1}, {tx - n - 1, ty}, {tx + 2, row},
+			{tx + 2, ty - 2}, {tx + 2, row - 1}, {tx + 2, row + 1},
+		} {
 			if c.blank(p[0], p[1], n) {
 				c.write(p[0], p[1], e.label)
 				return
@@ -663,10 +666,20 @@ func (c *canvas) edgeLabel(e *edge, lanes map[int]int, vertical bool) {
 	tx, ty := e.to.x-1, e.to.y+1
 	lo := min(e.from.rank, e.to.rank)
 	col := c.colsAt(lo)[lanes[lo]]
-	for _, p := range [][2]int{{col + 1, ty - 1}, {tx - n, ty - 1}, {col + 1, sy + 1}, {tx - n, ty + 1}} {
+	for _, p := range [][2]int{
+		{col + 1, ty - 1}, {tx - n, ty - 1}, {col + 1, sy + 1}, {tx - n, ty + 1},
+		{col + 1, ty}, {tx - n, ty}, {col + 1, ty - 2},
+	} {
 		if c.blank(p[0], p[1], n) {
 			c.write(p[0], p[1], e.label)
 			return
 		}
 	}
+}
+
+func abs(v int) int {
+	if v < 0 {
+		return -v
+	}
+	return v
 }

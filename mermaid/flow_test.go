@@ -120,3 +120,12 @@ func TestUnsupportedSourceIsAnError(t *testing.T) {
 		t.Error("a non-flowchart should report an error so the caller shows the source")
 	}
 }
+
+// A label wider than the space beside its arrow used to index the canvas with
+// a negative column.
+func TestLongEdgeLabelDoesNotPanic(t *testing.T) {
+	art := render(t, "graph TD\n  A[a] -->|an absurdly long edge label for the room available| B[b]\n")
+	if art.Width == 0 {
+		t.Error("empty art")
+	}
+}

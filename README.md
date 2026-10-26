@@ -71,9 +71,14 @@ Everything renders against twelve palette roles (`accent`, `muted`, `selection`,
 
 ## Mermaid
 
-Fences are drawn as box art, inline, in the document flow:
+Fences are drawn as box art, inline, in the flow of the document:
 
-![mdv drawing a mermaid flowchart](docs/flowchart.svg)
+![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)
+
+Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square
+`[]`, rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
+`|labels|` or `-- labels -->`, chains (`A --> B --> C`) and fan-out
+(`A --> B & C`).
 
 ```mermaid
 graph LR
@@ -84,12 +89,10 @@ graph LR
   D --> E
 ```
 
-Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square
-`[]`, rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
-`|labels|` or `-- labels -->`, chains (`A --> B --> C`) and fan-out
-(`A --> B & C`). Long edges swing around the boxes they skip instead of
-cutting through them. Anything the renderer cannot draw — too wide, unknown
-diagram type — is printed as source, never clipped.
+Every edge reserves its own lane in the gap it crosses, so two arrows between
+the same ranks never overlap, and a long edge swings around the boxes it skips
+instead of cutting through them. A diagram too wide for the pane, or a type the
+renderer does not know, is printed as source — never clipped.
 
 Sequence, state, class and ER diagrams are next.
 
