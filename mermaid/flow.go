@@ -23,6 +23,13 @@ const (
 	Edge
 	EdgeLabel
 	Title
+	Alert   // something to look at: a critical bar, an error row
+	Series1 // chart series colours, so slices and bars stay distinguishable
+	Series2
+	Series3
+	Series4
+	Series5
+	Series6
 )
 
 // Cell is one drawn character.

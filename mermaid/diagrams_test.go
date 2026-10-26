@@ -14,7 +14,9 @@ func TestKindDispatch(t *testing.T) {
 		"classDiagram\n class A":                          "class",
 		"erDiagram\n A ||--o{ B : x":                      "er",
 		"---\ntitle: front matter\n---\ngraph TD\n A-->B": "flowchart",
-		"pie\n \"a\": 3":                                  "",
+		"pie\n \"a\": 3":                                  "pie",
+		"gantt\n  title x":                                "gantt",
+		"journey\n  title x":                              "",
 	}
 	for src, want := range cases {
 		if got := kind(src); got != want {

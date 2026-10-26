@@ -21,6 +21,7 @@ shot screenshot 86 31 testdata/screenshot.md
 shot flowchart  86 46 testdata/flowchart.md
 shot sequence   96 50 testdata/diagrams.md
 shot models     96 33 testdata/models.md
+shot charts     84 24 testdata/charts.md
 ./mdv -frame -images halfblock -w 76 -h 24 testdata/imgdemo.md | python3 tools/frame2svg.py >docs/images.svg
 echo "docs/images.svg  <- testdata/imgdemo.md"
 

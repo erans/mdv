@@ -122,7 +122,7 @@ Fences are drawn as box art, inline, in the flow of the document:
 ![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)
 
 Every type `mdv` knows is drawn: `graph`/`flowchart`, `sequenceDiagram`,
-`stateDiagram-v2`, `classDiagram` and `erDiagram`.
+`stateDiagram-v2`, `classDiagram`, `erDiagram`, `pie` and `gantt`.
 
 For flowcharts: `LR`, `RL`, `TD` and `TB`, square `[]`, rounded `()` and
 decision `{}` nodes, `-->` `---` `-.->` `==>` edges with `|labels|` or
@@ -145,11 +145,13 @@ layout, and a node that would fall inside somebody else's frame is pushed out
 of it rather than enclosed by mistake. A diagram too wide for the pane, or a
 type the renderer does not know, is printed as source — never clipped.
 
-### Sequence, state, class and entities
+### Sequence, state, class, entities, pie and gantt
 
 | Sequence and state | Class and entities |
 | --- | --- |
 | [![mdv drawing a mermaid sequence diagram and a state diagram](docs/sequence.svg)](docs/sequence.svg) | [![mdv drawing a mermaid class diagram and an entity relationship diagram](docs/models.svg)](docs/models.svg) |
+
+![mdv drawing a mermaid pie chart and a gantt chart](docs/charts.svg)
 
 <details>
 <summary>The four sources behind those screenshots</summary>
@@ -214,6 +216,11 @@ erDiagram
   pointing at the class the mermaid arrowhead points at.
 - **Entities**: attribute rows inside the entity box, relationship labels from
   `A ||--o{ B : label`, whatever cardinality markers mermaid uses.
+- **Pie**: shares as a horizontal bar chart with a hue per slice — a real pie is
+  not drawable in box characters, and bars compare better anyway.
+- **Gantt**: `section` headers, `done`/`active`/`crit` fills, milestones as `◆`,
+  `after id` chains resolved to real dates, and a date axis over the whole span.
+  Dates are `YYYY-MM-DD`; `dateFormat`/`axisFormat` are ignored.
 
 ## Images
 
@@ -284,12 +291,16 @@ Done:
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [x] mermaid sequence, state, class and ER diagrams
+- [x] mermaid `pie` and `gantt` charts
 - [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
 
-- [ ] mermaid `gantt` and `pie` diagrams
+- [ ] mermaid `journey` and `mindmap`
+- [ ] horizontal scrolling for diagrams wider than the pane, instead of the
+      source fallback
+- [ ] a config file, so `--toc` and `-images` do not have to be typed every time
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the table layout, the mermaid layouts, the image

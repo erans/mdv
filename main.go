@@ -282,6 +282,20 @@ func paintClass(pal Palette, cl mermaid.Class, s string) string {
 		return paint(blend(pal.Fg, pal.Muted, 0.5), s)
 	case mermaid.Title:
 		return paint(pal.Accent, s)
+	case mermaid.Alert:
+		return paint(pal.Red, s)
+	case mermaid.Series1:
+		return paint(pal.Red, s)
+	case mermaid.Series2:
+		return paint(pal.Yellow, s)
+	case mermaid.Series3:
+		return paint(pal.Green, s)
+	case mermaid.Series4:
+		return paint(pal.Cyan, s)
+	case mermaid.Series5:
+		return paint(pal.Blue, s)
+	case mermaid.Series6:
+		return paint(pal.Magenta, s)
 	}
 	return s
 }

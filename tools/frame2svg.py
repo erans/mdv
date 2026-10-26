@@ -120,31 +120,41 @@ def main():
             # Block characters are drawn as rectangles: a glyph would leave
             # gaps between rows instead of forming a solid scrollbar.
             if set(text) <= {"\u2588", "\u2580", "\u2502"}:
-                for k, ch in enumerate(text):
+                # Merge runs of the same glyph into one rect: adjacent per-cell
+                # rects leave hairline seams at fractional coordinates.
+                k = 0
+                while k < len(text):
+                    ch = text[k]
+                    span = 1
+                    while k + span < len(text) and text[k + span] == ch:
+                        span += 1
                     x = PAD + (col + k) * CW
                     top = y - LH * 0.78
                     if ch == "\u2588":
                         body.append(
-                            f'<rect x="{x:.1f}" y="{top:.1f}" width="{CW:.1f}" '
+                            f'<rect x="{x:.1f}" y="{top:.1f}" width="{span * CW:.1f}" '
                             f'height="{LH:.1f}" fill="{fg or FG}"/>'
                         )
                     elif ch == "\u2580":
                         # Half block: the upper pixel in the foreground, the
                         # lower one in the background.
                         body.append(
-                            f'<rect x="{x:.1f}" y="{top:.1f}" width="{CW:.1f}" '
+                            f'<rect x="{x:.1f}" y="{top:.1f}" width="{span * CW:.1f}" '
                             f'height="{LH / 2:.1f}" fill="{fg or FG}"/>'
                         )
                         if bg:
                             body.append(
-                                f'<rect x="{x:.1f}" y="{top + LH / 2:.1f}" width="{CW:.1f}" '
+                                f'<rect x="{x:.1f}" y="{top + LH / 2:.1f}" width="{span * CW:.1f}" '
                                 f'height="{LH / 2:.1f}" fill="{bg}"/>'
                             )
                     else:
-                        body.append(
-                            f'<rect x="{x + CW / 2 - 0.7:.1f}" y="{y - LH * 0.78:.1f}" '
-                            f'width="1.4" height="{LH:.1f}" fill="{fg or FG}"/>'
-                        )
+                        for j in range(span):
+                            bx = PAD + (col + k + j + 0.5) * CW
+                            body.append(
+                                f'<rect x="{bx - 0.7:.1f}" y="{top:.1f}" '
+                                f'width="1.4" height="{LH:.1f}" fill="{fg or FG}"/>'
+                            )
+                    k += span
                 col += width
                 continue
             body.append(

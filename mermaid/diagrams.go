@@ -20,6 +20,10 @@ func Render(src string) (*Art, error) {
 		return renderER(src)
 	case "sequence":
 		return renderSequence(src)
+	case "pie":
+		return renderPie(src)
+	case "gantt":
+		return renderGantt(src)
 	}
 	return nil, errors.New("unsupported diagram type")
 }
@@ -50,6 +54,10 @@ func kind(src string) string {
 			return "er"
 		case strings.HasPrefix(low, "sequencediagram"):
 			return "sequence"
+		case strings.HasPrefix(low, "pie"):
+			return "pie"
+		case strings.HasPrefix(low, "gantt"):
+			return "gantt"
 		}
 		return ""
 	}
