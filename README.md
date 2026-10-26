@@ -38,7 +38,7 @@ the theme you are already running**.
 ## Install
 
 ```sh
-go install github.com/erans/mdv@latest    # needs Go 1.24+
+go install github.com/erans/mdv@latest    # needs Go 1.26+
 # or from a clone
 go build -o mdv .
 ```
