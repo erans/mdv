@@ -255,17 +255,19 @@ Done:
 - [x] markdown, tables, syntax highlighting, hyperlinks
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
 - [x] Omarchy palettes, terminal queries, built-in fallback
+- [x] own table renderer: wrapped cells, themed borders, nothing clipped
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [x] mermaid sequence, state, class and ER diagrams
-- [x] sequence `loop`/`alt`/`opt` frames and notes
+- [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
 
-- [x] own table renderer: wrapped cells, themed borders, nothing clipped
-- [ ] mermaid `alt`/`loop`/`note` blocks in sequence diagrams
+- [ ] `/` search and a table-of-contents pane in the viewer
+- [ ] mermaid `gantt` and `pie`
+- [ ] image cell size queried from the terminal instead of assumed
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
-recovery, the scrollbar math, the mermaid layouts, the image protocols and the
-frame layout.
+recovery, the scrollbar math, the table layout, the mermaid layouts, the image
+protocols and the frame layout.
