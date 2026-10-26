@@ -5,25 +5,21 @@ import (
 	"strings"
 	"testing"
 
-	"charm.land/glamour/v2"
+	image2 "image"
+	"image/color"
+	"image/png"
+	"path/filepath"
+
+	"github.com/erans/mdv/image"
 )
 
 func render(t *testing.T, src string, p Palette, width int) string {
 	t.Helper()
-	out, err := glamour.NewTermRenderer(
-		glamour.WithStyles(p.StyleConfig()),
-		glamour.WithWordWrap(width),
-		glamour.WithTableWrap(true),
-		glamour.WithChromaFormatter("terminal16m"),
-	)
+	rendered, err := renderMarkdown(src, p, renderOpts{baseDir: ".", images: image.Off}, width)
 	if err != nil {
 		t.Fatal(err)
 	}
-	rendered, err := out.Render(src)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return trimTrailing(rendered)
+	return rendered
 }
 
 func TestPaletteFromOmarchyColors(t *testing.T) {
@@ -126,5 +122,69 @@ func TestTrimLineKeepsVisibleText(t *testing.T) {
 		if got := trimLine(in); got != want {
 			t.Errorf("trimLine(%q) = %q, want %q", in, got, want)
 		}
+	}
+}
+
+func TestStandaloneImageBecomesABlock(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(dir, "a.png")
+	img := image2.NewRGBA(image2.Rect(0, 0, 40, 20))
+	for y := 0; y < 20; y++ {
+		for x := 0; x < 40; x++ {
+			img.Set(x, y, color.RGBA{uint8(x * 6), uint8(y * 12), 0x40, 0xff})
+		}
+	}
+	f, err := os.Create(src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := png.Encode(f, img); err != nil {
+		t.Fatal(err)
+	}
+	f.Close()
+
+	doc := filepath.Join(dir, "d.md")
+	if err := os.WriteFile(doc, []byte("before\n\n![alt text](a.png)\n\nafter\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	body, err := os.ReadFile(doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	out, err := renderMarkdown(string(body), builtinPalette(),
+		renderOpts{baseDir: dir, images: image.Kitty}, 40)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(out, "\x1b_Ga=T") {
+		t.Errorf("no kitty image in the output:\n%q", out)
+	}
+	if !strings.Contains(out, "before") || !strings.Contains(out, "after") {
+		t.Errorf("text around the image vanished:\n%q", out)
+	}
+
+	// With images off, the alt text is what a reader gets.
+	off, err := renderMarkdown(string(body), builtinPalette(),
+		renderOpts{baseDir: dir, images: image.Off}, 40)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(off, "\x1b_G") || !strings.Contains(off, "alt text") {
+		t.Errorf("images off should fall back to alt text:\n%q", off)
+	}
+}
+
+func TestRemoteImagesStayAltText(t *testing.T) {
+	out, err := renderMarkdown("![badge](https://example.com/b.svg)\n", builtinPalette(),
+		renderOpts{baseDir: ".", images: image.Kitty}, 40)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(out, "\x1b_G") {
+		t.Error("a remote URL should not be fetched or painted")
+	}
+	if !strings.Contains(out, "badge") {
+		t.Errorf("alt text missing:\n%q", out)
 	}
 }

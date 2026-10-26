@@ -15,20 +15,39 @@ PAD = 16
 BG = "#11111b"
 FG = "#cdd6f4"
 
-SGR = re.compile(r"\x1b\[([0-9;]*)m")
+SGR = re.compile(r"\x1b\[([0-9;:]*)m")
 OSC = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)")
 
 
 def runs(line):
-    """Split a line into (text, color, background, bold, underline) runs."""
+    """Split a line into (text, color, background, bold, underline) runs.
+
+    SGR colours arrive in both forms: `38;2;r;g;b` (semicolon separated) and
+    `38:2:r:g:b` (colon separated, what recent terminal libraries emit).
+    """
     out, fg, bg, bold, under, i = [], None, None, False, False, 0
     while i < len(line):
         m = SGR.match(line, i)
         if m:
-            for part in filter(None, m.group(1).split(";")):
-                p = part.split(":")
-                n = int(p[0]) if p[0].isdigit() else 0
-                if n == 0:
+            params = m.group(1).split(";")
+            j = 0
+            while j < len(params):
+                sub = params[j].split(":")
+                n = int(sub[0]) if sub[0].isdigit() else 0
+                if n in (38, 48):
+                    rgb = None
+                    if len(sub) >= 5 and sub[1] == "2":
+                        rgb = sub[2:5]
+                    elif j + 4 < len(params) and params[j + 1] == "2":
+                        rgb = params[j + 2 : j + 5]
+                        j += 4
+                    if rgb:
+                        hexed = "#%02x%02x%02x" % (int(rgb[0]), int(rgb[1]), int(rgb[2]))
+                        if n == 38:
+                            fg = hexed
+                        else:
+                            bg = hexed
+                elif n == 0:
                     fg = bg = None
                     bold = under = False
                 elif n == 1:
@@ -41,10 +60,7 @@ def runs(line):
                     fg = None
                 elif n == 49:
                     bg = None
-                elif n == 38 and len(p) >= 5 and p[1] == "2":
-                    fg = "#%02x%02x%02x" % (int(p[2]), int(p[3]), int(p[4]))
-                elif n == 48 and len(p) >= 5 and p[1] == "2":
-                    bg = "#%02x%02x%02x" % (int(p[2]), int(p[3]), int(p[4]))
+                j += 1
             i = m.end()
             continue
         o = OSC.match(line, i)
@@ -92,14 +108,27 @@ def main():
             width = cells(text)
             # Block characters are drawn as rectangles: a glyph would leave
             # gaps between rows instead of forming a solid scrollbar.
-            if set(text) <= {"\u2588", "\u2502"}:
+            if set(text) <= {"\u2588", "\u2580", "\u2502"}:
                 for k, ch in enumerate(text):
                     x = PAD + (col + k) * CW
+                    top = y - LH * 0.78
                     if ch == "\u2588":
                         body.append(
-                            f'<rect x="{x:.1f}" y="{y - LH * 0.78:.1f}" width="{CW:.1f}" '
+                            f'<rect x="{x:.1f}" y="{top:.1f}" width="{CW:.1f}" '
                             f'height="{LH:.1f}" fill="{fg or FG}"/>'
                         )
+                    elif ch == "\u2580":
+                        # Half block: the upper pixel in the foreground, the
+                        # lower one in the background.
+                        body.append(
+                            f'<rect x="{x:.1f}" y="{top:.1f}" width="{CW:.1f}" '
+                            f'height="{LH / 2:.1f}" fill="{fg or FG}"/>'
+                        )
+                        if bg:
+                            body.append(
+                                f'<rect x="{x:.1f}" y="{top + LH / 2:.1f}" width="{CW:.1f}" '
+                                f'height="{LH / 2:.1f}" fill="{bg}"/>'
+                            )
                     else:
                         body.append(
                             f'<rect x="{x + CW / 2 - 0.7:.1f}" y="{y - LH * 0.78:.1f}" '

@@ -21,6 +21,7 @@ type viewer struct {
 	title    string
 	src      string
 	pal      Palette
+	opts     renderOpts
 	width    int
 	height   int
 	contentW int      // width - scrollbar
@@ -30,8 +31,8 @@ type viewer struct {
 	drag     bool     // scrollbar drag in progress
 }
 
-func newViewer(title, src string, pal Palette, width, height int) *viewer {
-	v := &viewer{title: title, src: src, pal: pal}
+func newViewer(title, src string, pal Palette, opts renderOpts, width, height int) *viewer {
+	v := &viewer{title: title, src: src, pal: pal, opts: opts}
 	v.resize(width, height)
 	return v
 }
@@ -47,7 +48,7 @@ func (v *viewer) resize(width, height int) {
 	}
 	v.width, v.height = width, height
 	v.contentW = width - 1 // last column is the scrollbar
-	out, err := renderMarkdown(v.src, v.pal, v.contentW)
+	out, err := renderMarkdown(v.src, v.pal, v.opts, v.contentW)
 	if err != nil {
 		v.lines = []string{"mdv: " + err.Error()}
 		v.links = nil

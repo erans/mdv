@@ -28,6 +28,10 @@ scrollbar you can drag — **in the colors of the theme you are already running*
 - **Links you can actually click.** Terminals hand clicks to the app, so a plain
   hyperlink would never fire inside a full-screen viewer. `mdv` recovers the
   link spans from the rendered output and opens the one you clicked.
+- **Pictures stay pictures.** A README image is painted in place — with the
+  kitty graphics protocol, iTerm2's inline images, sixel, or half blocks where
+  none of those exist. Remote URLs are never fetched; a file that cannot be
+  painted falls back to its alt text.
 - **A scrollbar with a position, not a guess.** Thumb on the right edge, and a
   footer that says `42%` and `118/254` so you know where you are.
 
@@ -57,6 +61,7 @@ mdv -theme my.toml x.md  # use a specific colors.toml
 | `-plain` | print once instead of opening the viewer; automatic when not a TTY |
 | `-palette` | print the resolved palette and exit |
 | `-frame`, `-h` | print one viewer frame of `-h` rows and exit (screenshots, tests) |
+| `-images MODE` | `auto` (default), `kitty`, `iterm2`, `sixel`, `halfblock`, `off` |
 
 | Input | Does |
 | --- | --- |
@@ -174,6 +179,24 @@ erDiagram
 - **Entities**: attribute rows inside the entity box, relationship labels from
   `A ||--o{ B : label`, whatever cardinality markers mermaid uses.
 
+## Images
+
+![mdv painting a README image with half blocks](docs/images.svg)
+
+A paragraph that is nothing but `![alt](file.png)` becomes the picture itself,
+at the width of the pane:
+
+- **kitty** — the graphics protocol, by terminal class name. Works in kitty,
+  Ghostty, WezTerm and Warp.
+- **iTerm2** — OSC 1337 inline images.
+- **sixel** — for terminals that speak it, encoded here rather than shelled out.
+- **half blocks** — `▀` with a foreground and background colour per cell. Not a
+  protocol at all, so it works everywhere and scrolls with the text.
+
+`-images` picks one; `auto` uses the protocol the terminal reports, and half
+blocks inside the viewer, where scrolling redraws every line and a one-shot
+graphics escape would be painted twice. Piping gets the protocol.
+
 ## How it works
 
 - Markdown → ANSI is [glamour](https://github.com/charmbracelet/glamour), so
@@ -204,7 +227,10 @@ erDiagram
 - `direction` inside a `subgraph` is ignored; frames follow the diagram.
 - Fences inside a list item or blockquote stay a code block.
 - An edge label can end up touching a box corner when the gap is tight.
-- Images are not painted yet; an image renders as its alt text.
+- Only local images are painted: `![](https://…)` stays alt text, and an image
+  sharing a paragraph with text is left to the markdown renderer.
+- Cell size is assumed (10x20 px) when computing how many rows an image takes,
+  so a picture can come out a row taller or shorter than its box needs.
 
 ## Status
 
@@ -215,7 +241,7 @@ erDiagram
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [ ] own table renderer, for the boundary case above
 - [x] mermaid sequence, state, class and ER diagrams
-- [ ] inline images via kitty graphics, iTerm2 and sixel
+- [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the diagram layout and the frame layout.

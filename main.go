@@ -8,14 +8,14 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-
-	"github.com/erans/mdv/mermaid"
 	"regexp"
 	"strings"
 	"unicode/utf8"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/glamour/v2"
+	"github.com/erans/mdv/image"
+	"github.com/erans/mdv/mermaid"
 	"golang.org/x/term"
 )
 
@@ -27,6 +27,7 @@ func main() {
 	showPalette := flag.Bool("palette", false, "print the resolved palette and exit")
 	plain := flag.Bool("plain", false, "print once instead of opening the viewer")
 	frame := flag.Bool("frame", false, "print one viewer frame and exit (for screenshots)")
+	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
 
@@ -35,6 +36,16 @@ func main() {
 		fmt.Printf("%+v\n", pal)
 		return
 	}
+
+	images, err := image.Parse(*imagesFlag)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "mdv:", err)
+		os.Exit(1)
+	}
+	if images == image.Auto {
+		images = autoImages()
+	}
+	opts := renderOpts{baseDir: baseDir(flag.Args()), images: images}
 
 	src, err := readInput(flag.Args())
 	if err != nil {
@@ -49,11 +60,11 @@ func main() {
 	}
 
 	if *frame {
-		fmt.Print(newViewer(title(flag.Args()), src, pal, *width, *height).View().Content)
+		fmt.Print(newViewer(title(flag.Args()), src, pal, opts, *width, *height).View().Content)
 		return
 	}
 	if *plain || !term.IsTerminal(int(os.Stdout.Fd())) {
-		out, err := renderMarkdown(src, pal, *width)
+		out, err := renderMarkdown(src, pal, opts, *width)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "mdv:", err)
 			os.Exit(1)
@@ -66,17 +77,49 @@ func main() {
 	if tw, th, err := term.GetSize(int(os.Stdout.Fd())); err == nil && tw > 0 && th > 0 {
 		w, h = tw, th
 	}
-	if _, err := tea.NewProgram(newViewer(title(flag.Args()), src, pal, w, h)).Run(); err != nil {
+	if _, err := tea.NewProgram(newViewer(title(flag.Args()), src, pal, opts, w, h)).Run(); err != nil {
 		fmt.Fprintln(os.Stderr, "mdv:", err)
 		os.Exit(1)
 	}
 }
 
-// renderMarkdown splits mermaid fences out of the document, draws them, and
-// lets glamour render everything around them.
-func renderMarkdown(src string, pal Palette, width int) (string, error) {
+type renderOpts struct {
+	baseDir string
+	images  image.Protocol
+}
+
+// autoImages picks a protocol: the real one when the output is a plain stream,
+// half blocks inside the viewer, where scrolling redraws every line and a
+// one-shot graphics escape would be painted twice.
+func autoImages() image.Protocol {
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
+		return image.Detect()
+	}
+	return image.Halfblock
+}
+
+// baseDir is where relative image paths resolve from.
+func baseDir(args []string) string {
+	if len(args) == 0 {
+		return "."
+	}
+	return filepath.Dir(args[0])
+}
+
+// renderMarkdown splits mermaid fences and images out of the document, draws
+// them, and lets glamour render everything around them.
+func renderMarkdown(src string, pal Palette, o renderOpts, width int) (string, error) {
 	var b strings.Builder
-	for _, seg := range splitFences(src) {
+	for _, seg := range splitBlocks(src, o.baseDir) {
+		if seg.image != "" {
+			block, err := image.Render(seg.image, o.images, min(width, 100), 0)
+			if err == nil {
+				b.WriteString(block.Text)
+				continue
+			}
+			// Anything we cannot paint falls back to the alt text.
+			seg = segment{text: "![" + seg.alt + "](" + seg.image + ")\n"}
+		}
 		if seg.mermaid {
 			art, err := mermaid.Render(seg.text)
 			if err == nil && art.Width <= width {
@@ -98,18 +141,41 @@ func renderMarkdown(src string, pal Palette, width int) (string, error) {
 type segment struct {
 	text    string
 	mermaid bool
+	image   string // absolute path of a standalone image paragraph
+	alt     string
 }
 
-// splitFences pulls top-level mermaid fences out of the document.
+// imageRef matches a paragraph that is nothing but one image.
+var imageRef = regexp.MustCompile(`^\s*!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)\s*$`)
+
+// splitBlocks pulls mermaid fences and standalone images out of the document. A
+// paragraph holding an image next to other text is left to glamour.
 //
-// shortcut: fences nested inside a list item or blockquote are left to glamour
-// (they render as code). Upgrade if that ever shows up in a real README.
-func splitFences(src string) []segment {
+// shortcut: only local files are painted, and only when the image sits alone in
+// its paragraph; remote URLs and inline images stay alt text.
+//
+// Fences nested inside a list item or blockquote are left to glamour (they
+// render as code).
+func splitBlocks(src, dir string) []segment {
 	var out []segment
 	var text strings.Builder
 	lines := strings.Split(src, "\n")
 	for i := 0; i < len(lines); i++ {
 		line := lines[i]
+		if m := imageRef.FindStringSubmatch(line); m != nil && !strings.Contains(m[2], "://") {
+			path := m[2]
+			if !filepath.IsAbs(path) {
+				path = filepath.Join(dir, path)
+			}
+			if _, err := os.Stat(path); err == nil {
+				if text.Len() > 0 {
+					out = append(out, segment{text: text.String()})
+					text.Reset()
+				}
+				out = append(out, segment{image: path, alt: m[1]})
+				continue
+			}
+		}
 		if lang, ok := fenceLang(line); ok && lang == "mermaid" {
 			var body strings.Builder
 			for i++; i < len(lines); i++ {

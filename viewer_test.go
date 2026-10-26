@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/x/ansi"
+	"github.com/erans/mdv/image"
 )
 
 func TestOSC8At(t *testing.T) {
@@ -23,7 +24,7 @@ func TestOSC8At(t *testing.T) {
 
 func TestIndexLinksFindsRenderedLink(t *testing.T) {
 	src := "see [the docs](https://example.com/docs) now\n"
-	out, err := renderMarkdown(src, builtinPalette(), 60)
+	out, err := renderMarkdown(src, builtinPalette(), renderOpts{baseDir: ".", images: image.Off}, 60)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +47,7 @@ func TestIndexLinksFindsRenderedLink(t *testing.T) {
 
 func TestViewFillsExactlyTheScreen(t *testing.T) {
 	src := strings.Repeat("line\n\n", 200)
-	v := newViewer("t.md", src, builtinPalette(), 40, 10)
+	v := newViewer("t.md", src, builtinPalette(), renderOpts{images: image.Off}, 40, 10)
 	rows := strings.Split(strings.TrimSuffix(v.View().Content, "\r\n"), "\r\n")
 	if len(rows) != 10 {
 		t.Fatalf("rendered %d rows, want 10", len(rows))
@@ -59,7 +60,7 @@ func TestViewFillsExactlyTheScreen(t *testing.T) {
 }
 
 func TestThumbTracksProgress(t *testing.T) {
-	v := newViewer("t.md", strings.Repeat("x\n", 400), builtinPalette(), 40, 11)
+	v := newViewer("t.md", strings.Repeat("x\n", 400), builtinPalette(), renderOpts{images: image.Off}, 40, 11)
 	page := v.page()
 	top0, _ := v.thumb(page)
 	v.off = v.maxOff()
