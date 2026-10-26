@@ -201,11 +201,11 @@
 <text x="285.7" y="631.3" textLength="446.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                     </text>
 <rect x="732.4" y="616.7" width="8.4" height="18.8" fill="#7aa2f7"/>
 <text x="16.0" y="650.1" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
-<rect x="732.4" y="635.5" width="8.4" height="18.8" fill="#7aa2f7"/>
+<rect x="735.9" y="635.5" width="1.4" height="18.8" fill="#414868"/>
 <text x="16.0" y="668.8" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#7aa2f7" font-weight="600">Groups become</text>
 <text x="125.6" y="668.8" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#7aa2f7" font-weight="600"> frames</text>
 <text x="184.6" y="668.8" textLength="547.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                 </text>
-<rect x="732.4" y="654.2" width="8.4" height="18.8" fill="#7aa2f7"/>
+<rect x="735.9" y="654.2" width="1.4" height="18.8" fill="#414868"/>
 <text x="16.0" y="687.6" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">╭─</text>
 <text x="32.9" y="687.6" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#7aa2f7"> Build </text>
 <text x="91.9" y="687.6" textLength="193.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">──────────────────────╮</text>
@@ -214,7 +214,7 @@
 <text x="311.0" y="687.6" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#7aa2f7"> Test </text>
 <text x="361.5" y="687.6" textLength="202.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">───────────────────────╮</text>
 <text x="563.8" y="687.6" textLength="168.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                    </text>
-<rect x="732.4" y="673.0" width="8.4" height="18.8" fill="#7aa2f7"/>
+<rect x="735.9" y="673.0" width="1.4" height="18.8" fill="#414868"/>
 <rect x="19.5" y="691.7" width="1.4" height="18.8" fill="#414868"/>
 <text x="24.4" y="706.4" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
 <rect x="280.8" y="691.7" width="1.4" height="18.8" fill="#414868"/>
@@ -315,9 +315,9 @@
 <text x="176.1" y="837.7" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#7aa2f7" font-weight="600"> weights</text>
 <text x="243.6" y="837.7" textLength="488.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                          </text>
 <rect x="735.9" y="823.1" width="1.4" height="18.8" fill="#414868"/>
-<text x="16.0" y="856.4" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<text x="16.0" y="856.4" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">┌───────────────────────────────────┬───────────────────────────────────────────────┐</text>
 <rect x="735.9" y="841.8" width="1.4" height="18.8" fill="#414868"/>
 <text x="16.0" y="875.2" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">flowchart.md</text>
 <text x="117.1" y="875.2" textLength="480.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                         </text>
-<text x="597.5" y="875.2" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">0%  45/56  q quit</text>
+<text x="597.5" y="875.2" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#414868">0%  45/61  q quit</text>
 </svg>

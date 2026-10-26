@@ -26,6 +26,10 @@ scrollbar you can drag — **in the colors of the theme you are already running*
   flowchart, sequence, state, class, entity relationship — becomes box art in
   the flow of the document, with its shapes, labels, dashed edges and titled
   frames intact.
+- **Tables that wrap, never clip.** Columns shrink down to their longest word
+  and cells wrap; a table too narrow to lay out is printed as source instead of
+  losing text. Borders follow the theme, headers are bold, `code` keeps its
+  colour.
 - **Links you can actually click.** Terminals hand clicks to the app, so a plain
   hyperlink would never fire inside a full-screen viewer. `mdv` recovers the
   link spans from the rendered output and opens the one you clicked.
@@ -201,7 +205,10 @@ graphics escape would be painted twice. Piping gets the protocol.
 ## How it works
 
 - Markdown → ANSI is [glamour](https://github.com/charmbracelet/glamour), so
-  text, tables, code and syntax highlighting are not reinvented here.
+  text, code and syntax highlighting are not reinvented here. Tables are cut out
+  first and laid out by `table.go`, because a cell must wrap rather than be
+  clipped when the table lands on the wrap width, and because a border should
+  take the theme's colour.
 - Mermaid fences are cut out of the document before glamour sees them, drawn by
   the `mermaid` package, and spliced back in.
 - The viewer is [bubbletea](https://github.com/charmbracelet/bubbletea), with a
@@ -219,8 +226,6 @@ graphics escape would be painted twice. Piping gets the protocol.
 
 ## Known limits
 
-- glamour truncates a table cell when the table lands exactly on the wrap
-  width. An own table renderer is the next piece of work.
 - A decision node (`{}`) is drawn as a `╱──╲` frame, not a true diamond.
 - Sequence diagrams ignore `alt`/`loop`/`note` blocks; only messages are drawn.
 - Class relation arrowheads are one shape; UML's hollow triangles and diamonds
@@ -247,7 +252,7 @@ Done:
 
 Next:
 
-- [ ] own table renderer, for the boundary case above
+- [x] own table renderer: wrapped cells, themed borders, nothing clipped
 - [ ] mermaid `alt`/`loop`/`note` blocks in sequence diagrams
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link

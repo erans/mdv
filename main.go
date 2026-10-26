@@ -111,6 +111,14 @@ func baseDir(args []string) string {
 func renderMarkdown(src string, pal Palette, o renderOpts, width int) (string, error) {
 	var b strings.Builder
 	for _, seg := range splitBlocks(src, o.baseDir) {
+		if seg.table != nil {
+			if lines := seg.table.render(pal, width); lines != nil {
+				b.WriteString(strings.Join(lines, "\n") + "\n")
+				continue
+			}
+			// Too narrow to lay out: show the source instead of clipping cells.
+			seg = segment{text: "```\n" + strings.Join(seg.table.raw, "\n") + "\n```\n"}
+		}
 		if seg.image != "" {
 			block, err := image.Render(seg.image, o.images, min(width, 100), 0)
 			if err == nil {
@@ -143,6 +151,7 @@ type segment struct {
 	mermaid bool
 	image   string // absolute path of a standalone image paragraph
 	alt     string
+	table   *table
 }
 
 // imageRef matches a paragraph that is nothing but one image.
@@ -175,6 +184,15 @@ func splitBlocks(src, dir string) []segment {
 				out = append(out, segment{image: path, alt: m[1]})
 				continue
 			}
+		}
+		if t, used := parseTable(lines[i:]); t != nil {
+			if text.Len() > 0 {
+				out = append(out, segment{text: text.String()})
+				text.Reset()
+			}
+			out = append(out, segment{table: t})
+			i += used - 1
+			continue
 		}
 		if lang, ok := fenceLang(line); ok && lang == "mermaid" {
 			var body strings.Builder
