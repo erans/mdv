@@ -116,8 +116,10 @@ func TestArtIsTrimmedAndBounded(t *testing.T) {
 }
 
 func TestUnsupportedSourceIsAnError(t *testing.T) {
-	if _, err := Render("sequenceDiagram\n  A->>B: hi\n"); err == nil {
-		t.Error("a non-flowchart should report an error so the caller shows the source")
+	for _, src := range []string{"pie\n  \"a\" : 3\n", "gantt\n  title x\n", "hello world\n"} {
+		if _, err := Render(src); err == nil {
+			t.Errorf("%q should report an error so the caller shows the source", src)
+		}
 	}
 }
 

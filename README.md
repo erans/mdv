@@ -4,10 +4,8 @@
 
 ![mdv rendering a README](docs/screenshot.svg)
 
-Both screenshots here — this one and the
-[graphs and flowcharts](#mermaid) one further down — are renders of real viewer
-frames, not mockups: `mdv -frame` prints one frame and `tools/frame2svg.py`
-turns it into an SVG.
+The screenshots in this file are renders of real viewer frames, not mockups:
+`mdv -frame` prints one frame and `tools/frame2svg.py` turns it into an SVG.
 
 Your terminal already has a theme. Your bar, your editor and your file manager
 already match it. Then you `cat README.md` and get a wall of plain text with a
@@ -23,9 +21,10 @@ scrollbar you can drag — **in the colors of the theme you are already running*
   palette your desktop is wearing: `accent` on headings and links, `muted` on
   borders, `selection` behind inline code. Change the theme, `mdv` changes with
   it. No config file, no `--style` flag to remember.
-- **Diagrams are drawn, not printed.** A mermaid `graph`, `flowchart` or
-  `subgraph` becomes box art in the flow of the document, with its shapes,
-  labels, dashed edges and titled frames intact.
+- **Diagrams are drawn, not printed.** All six mermaid fence types — flowchart,
+  sequence, state, class, entity relationship — become box art in the flow of
+  the document, with their shapes, labels, dashed edges and titled frames
+  intact.
 - **Links you can actually click.** Terminals hand clicks to the app, so a plain
   hyperlink would never fire inside a full-screen viewer. `mdv` recovers the
   link spans from the rendered output and opens the one you clicked.
@@ -92,10 +91,13 @@ Fences are drawn as box art, inline, in the flow of the document:
 
 ![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)
 
-Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square `[]`,
-rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
-`|labels|` or `-- labels -->`, chains (`A --> B --> C`), fan-out
-(`A --> B & C`) and `subgraph name[Title]` frames, nested ones included.
+All six diagram types mermaid spells with a fence are drawn: `graph`/`flowchart`,
+`sequenceDiagram`, `stateDiagram-v2`, `classDiagram` and `erDiagram`.
+
+For flowcharts: `LR`, `RL`, `TD` and `TB`, square `[]`, rounded `()` and
+decision `{}` nodes, `-->` `---` `-.->` `==>` edges with `|labels|` or
+`-- labels -->`, chains (`A --> B --> C`), fan-out (`A --> B & C`) and
+`subgraph name[Title]` frames, nested ones included.
 
 ```mermaid
 graph LR
@@ -113,7 +115,64 @@ layout, and a node that would fall inside somebody else's frame is pushed out
 of it rather than enclosed by mistake. A diagram too wide for the pane, or a
 type the renderer does not know, is printed as source — never clipped.
 
-Sequence, state, class and ER diagrams are next.
+### Sequence, state, class and entities
+
+| Sequence and state | Class and entities |
+| --- | --- |
+| [![mdv drawing a mermaid sequence diagram and a state diagram](docs/sequence.svg)](docs/sequence.svg) | [![mdv drawing a mermaid class diagram and an entity relationship diagram](docs/models.svg)](docs/models.svg) |
+
+<details>
+<summary>The four sources behind those screenshots</summary>
+
+```mermaid
+sequenceDiagram
+  participant A as Browser
+  participant B as Server
+  A->>B: GET /readme
+  B-->>A: 200 markdown
+```
+
+```mermaid
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Parsing : fence
+  Parsing --> Drawing
+  Parsing --> Failed : bad syntax
+  Drawing --> Idle : done
+```
+
+```mermaid
+classDiagram
+  class Renderer {
+    +String name
+    +render(src)
+  }
+  Renderer <|-- Flow
+  Renderer <|-- Sequence
+  Flow --> Box : draws
+```
+
+```mermaid
+erDiagram
+  CUSTOMER ||--o{ ORDER : places
+  ORDER ||--|{ LINE_ITEM : contains
+  CUSTOMER {
+    string id PK
+    string email
+  }
+```
+
+</details>
+
+- **Sequence**: participant boxes and lifelines, `->>` solid and `-->>` dashed
+  messages, self messages, labels centred between the lifelines.
+- **State**: `[*]` start and end dots, `A --> B : label` transitions, cycles
+  ranked by breaking back edges first so the diagram does not run downwards
+  forever.
+- **Class**: compartments for members, inheritance and association arrows
+  pointing at the class the mermaid arrowhead points at.
+- **Entities**: attribute rows inside the entity box, relationship labels from
+  `A ||--o{ B : label`, whatever cardinality markers mermaid uses.
 
 ## How it works
 
@@ -139,6 +198,9 @@ Sequence, state, class and ER diagrams are next.
 - glamour truncates a table cell when the table lands exactly on the wrap
   width. An own table renderer is the next piece of work.
 - A decision node (`{}`) is drawn as a `╱──╲` frame, not a true diamond.
+- Sequence diagrams ignore `alt`/`loop`/`note` blocks; only messages are drawn.
+- Class relation arrowheads are one shape; UML's hollow triangles and diamonds
+  are not distinguished.
 - `direction` inside a `subgraph` is ignored; frames follow the diagram.
 - Fences inside a list item or blockquote stay a code block.
 - An edge label can end up touching a box corner when the gap is tight.
@@ -152,7 +214,7 @@ Sequence, state, class and ER diagrams are next.
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [ ] own table renderer, for the boundary case above
-- [ ] mermaid sequence, state, class and ER diagrams
+- [x] mermaid sequence, state, class and ER diagrams
 - [ ] inline images via kitty graphics, iTerm2 and sixel
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link

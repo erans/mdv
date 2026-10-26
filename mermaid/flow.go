@@ -47,6 +47,7 @@ const (
 
 type node struct {
 	id, label string
+	body      []string // extra rows inside the box: fields, methods, attributes
 	shape     shape
 	w, h      int
 	x, y      int
@@ -75,6 +76,7 @@ type graph struct {
 	subgraphs []*subgraph
 	stack     []*subgraph
 	owner     map[*node]*subgraph
+	back      map[*edge]bool // edges that close a cycle
 }
 
 // subgraph is a titled frame around a group of nodes.
@@ -87,9 +89,8 @@ type subgraph struct {
 	x1, y1    int
 }
 
-// Render parses and draws a flowchart. An error means the caller should show
-// the fenced source instead.
-func Render(src string) (*Art, error) {
+// renderFlow parses and draws a flowchart.
+func renderFlow(src string) (*Art, error) {
 	g := parse(src)
 	if !g.declared {
 		return nil, errors.New("not a flowchart")
@@ -382,9 +383,13 @@ func (p *scan) arrow() (arrowSpec, bool) {
 // layout ranks nodes by longest path, then reserves one free lane per edge in
 // every gap that edge crosses, so no line ever runs through a box.
 func (g *graph) layout() {
-	for i := 0; i < len(g.nodes); i++ { // bounded: a cycle cannot rank forever
+	g.breakCycles()
+	for i := 0; i < len(g.nodes); i++ { // bounded: the DAG cannot rank forever
 		changed := false
 		for _, e := range g.edges {
+			if g.back[e] {
+				continue
+			}
 			if e.to.rank < e.from.rank+1 {
 				e.to.rank = e.from.rank + 1
 				changed = true
@@ -395,7 +400,7 @@ func (g *graph) layout() {
 		}
 	}
 	for _, n := range g.nodes {
-		n.w, n.h = len([]rune(n.label))+4, 3
+		n.size()
 	}
 	if g.dir == "RL" || g.dir == "BT" {
 		max := 0
@@ -517,6 +522,36 @@ func (g *graph) makeRoom(sg *subgraph) bool {
 	return moved
 }
 
+// breakCycles marks the edges that close a loop, so ranking sees a DAG. Those
+// edges are still drawn; they just point back up the layout.
+func (g *graph) breakCycles() {
+	g.back = map[*edge]bool{}
+	adj := map[*node][]*edge{}
+	for _, e := range g.edges {
+		adj[e.from] = append(adj[e.from], e)
+	}
+	const white, grey, black = 0, 1, 2
+	color := map[*node]int{}
+	var walk func(n *node)
+	walk = func(n *node) {
+		color[n] = grey
+		for _, e := range adj[n] {
+			switch color[e.to] {
+			case grey:
+				g.back[e] = true
+			case white:
+				walk(e.to)
+			}
+		}
+		color[n] = black
+	}
+	for _, n := range g.nodes {
+		if color[n] == white {
+			walk(n)
+		}
+	}
+}
+
 func (g *graph) vertical() bool { return g.dir != "LR" && g.dir != "RL" }
 
 func (g *graph) ranks() [][]*node {
@@ -582,11 +617,13 @@ func (g *graph) placeVertical() {
 	y := 0
 	for i, rank := range ranks {
 		x := (widest - widths[i]) / 2
+		tallest := 0
 		for _, n := range rank {
 			n.x, n.y = x, y
 			x += n.w + 3
+			tallest = max(tallest, n.h)
 		}
-		y += 3
+		y += tallest
 		gap := max(2, span[i]+1) // last row stays free for arrowheads
 		if len(g.subgraphs) > 0 {
 			gap += 2 // room for frames around the members
@@ -794,17 +831,32 @@ func (c *canvas) box(n *node) {
 	case decisionShape:
 		topL, topR, botL, botR = '╱', '╲', '╲', '╱'
 	}
+	bottom := n.y + n.h - 1
 	c.put(n.x, n.y, topL, Border)
 	c.put(n.x+n.w-1, n.y, topR, Border)
-	c.put(n.x, n.y+2, botL, Border)
-	c.put(n.x+n.w-1, n.y+2, botR, Border)
+	c.put(n.x, bottom, botL, Border)
+	c.put(n.x+n.w-1, bottom, botR, Border)
 	for x := n.x + 1; x < n.x+n.w-1; x++ {
 		c.put(x, n.y, '─', Border)
-		c.put(x, n.y+2, '─', Border)
+		c.put(x, bottom, '─', Border)
 	}
-	c.put(n.x, n.y+1, '│', Border)
-	c.put(n.x+n.w-1, n.y+1, '│', Border)
-	c.text(n.x+2, n.y+1, n.label, Text)
+	for y := n.y + 1; y < bottom; y++ {
+		c.put(n.x, y, '│', Border)
+		c.put(n.x+n.w-1, y, '│', Border)
+	}
+	c.text(n.x+2, n.y+1, n.label, Title)
+	if len(n.body) == 0 {
+		return
+	}
+	sep := n.y + 2
+	for x := n.x + 1; x < n.x+n.w-1; x++ {
+		c.put(x, sep, '─', Border)
+	}
+	c.put(n.x, sep, '├', Border)
+	c.put(n.x+n.w-1, sep, '┤', Border)
+	for i, line := range n.body {
+		c.text(n.x+2, sep+1+i, line, Text)
+	}
 }
 
 // edgeVertical routes one edge between two ranks. Adjacent ranks take the
@@ -815,7 +867,7 @@ func (c *canvas) edgeVertical(e *edge, lanes map[int]int) {
 	if e.dashed {
 		h, v = c.hlineDashed, c.vlineDashed
 	}
-	sx, sy := e.from.x+e.from.w/2, e.from.y+3
+	sx, sy := e.from.x+e.from.w/2, e.from.y+e.from.h
 	tx, ty := e.to.x+e.to.w/2, e.to.y-1
 	up := max(e.from.rank, e.to.rank) == e.from.rank
 	lo, hi := min(e.from.rank, e.to.rank), max(e.from.rank, e.to.rank)
@@ -851,8 +903,8 @@ func (c *canvas) edgeHorizontal(e *edge, lanes map[int]int) {
 	if e.dashed {
 		h, v = c.hlineDashed, c.vlineDashed
 	}
-	sx, sy := e.from.x+e.from.w, e.from.y+1
-	tx, ty := e.to.x-1, e.to.y+1
+	sx, sy := e.from.x+e.from.w, e.from.midY()
+	tx, ty := e.to.x-1, e.to.midY()
 	lo, hi := min(e.from.rank, e.to.rank), max(e.from.rank, e.to.rank)
 	if lo == hi {
 		return
@@ -897,7 +949,7 @@ func (c *canvas) arrow(e *edge, vertical bool) {
 	if e.to.rank < e.from.rank {
 		ch = '◀'
 	}
-	c.put(e.to.x-1, e.to.y+1, ch, Edge)
+	c.put(e.to.x-1, e.to.midY(), ch, Edge)
 }
 
 // edgeLabel writes the label into the first free spot next to its arrow, so a
@@ -918,7 +970,7 @@ func (c *canvas) edgeLabel(e *edge, lanes map[int]int, vertical bool) {
 		}
 	} else {
 		sy := e.from.y + 1
-		tx, ty := e.to.x-1, e.to.y+1
+		tx, ty := e.to.x-1, e.to.midY()
 		col := c.colsAt(lo)[lanes[lo]]
 		cands = [][2]int{
 			{col + 1, ty - 1}, {tx - n - 1, ty - 1}, {tx - n, ty - 1}, {col + 1, sy + 1},
@@ -938,6 +990,23 @@ func (c *canvas) edgeLabel(e *edge, lanes map[int]int, vertical bool) {
 		}
 	}
 }
+
+// size fits the box to its widest line; a node with a body is taller by one
+// separator row plus one row per body line.
+func (n *node) size() {
+	widest := len([]rune(n.label))
+	for _, line := range n.body {
+		widest = max(widest, len([]rune(line)))
+	}
+	n.w = widest + 4
+	n.h = 3
+	if len(n.body) > 0 {
+		n.h = 4 + len(n.body)
+	}
+}
+
+// midY is the row an edge attaches to on the left and right side of the box.
+func (n *node) midY() int { return n.y + n.h/2 }
 
 func abs(v int) int {
 	if v < 0 {
