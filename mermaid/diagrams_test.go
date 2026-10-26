@@ -43,18 +43,16 @@ func TestSequenceDiagram(t *testing.T) {
 }
 
 func TestSequenceParticipantsFollowFirstUse(t *testing.T) {
-	g := parseSequence(t, "sequenceDiagram\n  A->>B: hi\n  C->>A: back\n")
+	g := participantsOf("sequenceDiagram\n  A->>B: hi\n  C->>A: back\n")
 	if len(g) != 3 || g[0] != "A" || g[1] != "B" || g[2] != "C" {
 		t.Errorf("participants = %v, want [A B C]", g)
 	}
 }
 
-func parseSequence(t *testing.T, src string) []string {
-	t.Helper()
+func participantsOf(src string) []string {
 	var parts []string
 	for _, raw := range strings.Split(src, "\n") {
-		line := strings.TrimSpace(raw)
-		from, to, _, _, _, ok := splitMessage(line)
+		from, to, _, _, _, ok := splitMessage(strings.TrimSpace(raw))
 		if !ok {
 			continue
 		}
@@ -164,5 +162,91 @@ func TestSubgraphStillWorksForFlowcharts(t *testing.T) {
 	out := plain(render(t, "graph LR\n  subgraph ci[CI]\n    A[a] --> B[b]\n  end\n  B --> C[c]\n"))
 	if !strings.Contains(out, "╭─ CI ─") {
 		t.Errorf("subgraph frame lost:\n%s", out)
+	}
+}
+
+func TestSequenceFragmentsAndNotes(t *testing.T) {
+	m, err := parseSequence(`sequenceDiagram
+  A->>B: request
+  loop every second
+    B->>B: poll
+  end
+  alt ok
+    B-->>A: body
+  else failed
+    B-->>A: error
+  end
+  Note over A,B: shared
+  Note right of B: private
+`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var starts, elses, ends, notes int
+	for _, it := range m.items {
+		switch it.kind {
+		case itemFrameStart:
+			starts++
+		case itemFrameElse:
+			elses++
+		case itemFrameEnd:
+			ends++
+		case itemNote:
+			notes++
+			if it.note.side == noteRight && it.note.text != "private" {
+				t.Errorf("right note = %+v", it.note)
+			}
+		}
+	}
+	if starts != 2 || elses != 1 || ends != 2 || notes != 2 {
+		t.Fatalf("starts=%d elses=%d ends=%d notes=%d, want 2/1/2/2", starts, elses, ends, notes)
+	}
+	if m.maxDepth != 1 {
+		t.Errorf("maxDepth = %d, want 1", m.maxDepth)
+	}
+
+	out := plain(render(t, `sequenceDiagram
+  A->>B: request
+  loop every second
+    B->>B: poll
+  end
+  alt ok
+    B-->>A: body
+  else failed
+    B-->>A: error
+  end
+  Note over A,B: shared
+`))
+	for _, want := range []string{"┌─ loop every second ", "┌─ alt ok ", "├─ failed ", "└", "shared"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("sequence output missing %q:\n%s", want, out)
+		}
+	}
+}
+
+func TestSequenceNestedFragments(t *testing.T) {
+	out := plain(render(t, `sequenceDiagram
+  A->>B: go
+  loop outer
+    alt inner
+      B-->>A: yes
+    end
+  end
+`))
+	if !strings.Contains(out, "┌─ loop outer ") || !strings.Contains(out, "┌─ alt inner ") {
+		t.Errorf("nested frames missing:\n%s", out)
+	}
+	// The inner frame sits one gutter inside the outer one.
+	for _, line := range strings.Split(out, "\n") {
+		if strings.Contains(line, "alt inner") && !strings.HasPrefix(line, "│ ┌─ alt inner") {
+			t.Errorf("inner frame not indented: %q", line)
+		}
+	}
+}
+
+func TestSequenceUnclosedFrameIsIgnored(t *testing.T) {
+	out := plain(render(t, "sequenceDiagram\n  A->>B: hi\n  loop never closed\n    A->>B: again\n"))
+	if strings.Contains(out, "└") && strings.Contains(out, "loop never closed ─") {
+		t.Errorf("an unclosed loop should not draw a closed frame:\n%s", out)
 	}
 }

@@ -139,7 +139,15 @@ sequenceDiagram
   participant A as Browser
   participant B as Server
   A->>B: GET /readme
-  B-->>A: 200 markdown
+  loop every request
+    B->>B: check cache
+    Note right of B: hit rate 94%
+  end
+  alt cached
+    B-->>A: 200 cached
+  else cold
+    B-->>A: 200 fresh
+  end
 ```
 
 ```mermaid
@@ -175,7 +183,10 @@ erDiagram
 </details>
 
 - **Sequence**: participant boxes and lifelines, `->>` solid and `-->>` dashed
-  messages, self messages, labels centred between the lifelines.
+  messages, self messages, labels centred between the lifelines, `loop`/`alt`/
+  `opt`/`par`/`critical` frames with `else` dividers (nested too), and
+  `Note over` / `Note left of` / `Note right of` boxes that hide the lifelines
+  they cover.
 - **State**: `[*]` start and end dots, `A --> B : label` transitions, cycles
   ranked by breaking back edges first so the diagram does not run downwards
   forever.
@@ -227,7 +238,6 @@ graphics escape would be painted twice. Piping gets the protocol.
 ## Known limits
 
 - A decision node (`{}`) is drawn as a `╱──╲` frame, not a true diamond.
-- Sequence diagrams ignore `alt`/`loop`/`note` blocks; only messages are drawn.
 - Class relation arrowheads are one shape; UML's hollow triangles and diamonds
   are not distinguished.
 - `direction` inside a `subgraph` is ignored; frames follow the diagram.
@@ -248,6 +258,7 @@ Done:
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [x] mermaid sequence, state, class and ER diagrams
+- [x] sequence `loop`/`alt`/`opt` frames and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
