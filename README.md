@@ -5,7 +5,8 @@
 ![mdv rendering a README](docs/screenshot.svg)
 
 The screenshots in this file are renders of real viewer frames, not mockups:
-`mdv -frame` prints one frame and `tools/frame2svg.py` turns it into an SVG.
+`mdv -frame` prints one frame, `tools/frame2svg.py` turns it into an SVG, and
+`tools/screenshots.sh` regenerates all of them.
 
 Your terminal already has a theme. Your bar, your editor and your file manager
 already match it. Then you `cat README.md` and get a wall of plain text with a
@@ -21,10 +22,10 @@ scrollbar you can drag — **in the colors of the theme you are already running*
   palette your desktop is wearing: `accent` on headings and links, `muted` on
   borders, `selection` behind inline code. Change the theme, `mdv` changes with
   it. No config file, no `--style` flag to remember.
-- **Diagrams are drawn, not printed.** All six mermaid fence types — flowchart,
-  sequence, state, class, entity relationship — become box art in the flow of
-  the document, with their shapes, labels, dashed edges and titled frames
-  intact.
+- **Diagrams are drawn, not printed.** Every mermaid type `mdv` knows —
+  flowchart, sequence, state, class, entity relationship — becomes box art in
+  the flow of the document, with its shapes, labels, dashed edges and titled
+  frames intact.
 - **Links you can actually click.** Terminals hand clicks to the app, so a plain
   hyperlink would never fire inside a full-screen viewer. `mdv` recovers the
   link spans from the rendered output and opens the one you clicked.
@@ -96,8 +97,8 @@ Fences are drawn as box art, inline, in the flow of the document:
 
 ![mdv drawing mermaid graphs and flowcharts](docs/flowchart.svg)
 
-All six diagram types mermaid spells with a fence are drawn: `graph`/`flowchart`,
-`sequenceDiagram`, `stateDiagram-v2`, `classDiagram` and `erDiagram`.
+Every type `mdv` knows is drawn: `graph`/`flowchart`, `sequenceDiagram`,
+`stateDiagram-v2`, `classDiagram` and `erDiagram`.
 
 For flowcharts: `LR`, `RL`, `TD` and `TB`, square `[]`, rounded `()` and
 decision `{}` nodes, `-->` `---` `-.->` `==>` edges with `|labels|` or
@@ -208,12 +209,12 @@ graphics escape would be painted twice. Piping gets the protocol.
 - Link spans are recovered by walking the rendered lines and counting visible
   columns while skipping SGR and OSC sequences, so a click maps to exactly the
   characters the terminal drew.
-- `-frame` prints one viewer frame; `tools/frame2svg.py` turns it into an SVG:
+- `-frame` prints one viewer frame, so a screenshot is just a frame piped
+  through `tools/frame2svg.py`. `tools/screenshots.sh` does that for every image
+  in `docs/`:
 
   ```sh
-  go build -o mdv .
-  ./mdv -frame -w 86 -h 46 -theme testdata/tokyo-night.toml testdata/flowchart.md \
-    | python3 tools/frame2svg.py > docs/flowchart.svg
+  ./tools/screenshots.sh
   ```
 
 ## Known limits
@@ -234,14 +235,21 @@ graphics escape would be painted twice. Piping gets the protocol.
 
 ## Status
 
+Done:
+
 - [x] markdown, tables, syntax highlighting, hyperlinks
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
 - [x] Omarchy palettes, terminal queries, built-in fallback
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
-- [ ] own table renderer, for the boundary case above
 - [x] mermaid sequence, state, class and ER diagrams
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
+Next:
+
+- [ ] own table renderer, for the boundary case above
+- [ ] mermaid `alt`/`loop`/`note` blocks in sequence diagrams
+
 `go test ./...` covers the palette parser, the OSC reply parser, the link
-recovery, the scrollbar math, the diagram layout and the frame layout.
+recovery, the scrollbar math, the mermaid layouts, the image protocols and the
+frame layout.
