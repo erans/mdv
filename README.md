@@ -78,6 +78,7 @@ mdv --toc README.md      # start with the contents pane open
 | `d`/`u`, `space`, `PgUp`/`PgDn` | half a page |
 | `g`/`G`, `Home`/`End` | top, bottom |
 | `/` then text | search; `enter` jumps, `n`/`N` step, `esc` clears |
+| `H`/`L`, `0` | scroll sideways when a diagram is wider than the pane, and back |
 | `t` | table of contents pane; `j`/`k` move, `enter`/click jumps |
 | `q`, `Esc`, `Ctrl+C` | quit (`Esc` first closes search or the pane) |
 
@@ -142,8 +143,15 @@ Every edge reserves its own lane in the gap it crosses, so two arrows between
 the same ranks never overlap, and a long edge swings around the boxes it skips
 instead of cutting through them. A frame is sized around its members after the
 layout, and a node that would fall inside somebody else's frame is pushed out
-of it rather than enclosed by mistake. A diagram too wide for the pane, or a
-type the renderer does not know, is printed as source — never clipped.
+of it rather than enclosed by mistake.
+
+![mdv scrolling a diagram wider than the pane](docs/wide.svg)
+
+A diagram wider than the pane is still drawn: `H` and `L` scroll it sideways and
+`0` brings it back, with the offset in the footer. Only lines that overflow are
+cut, so the prose around a diagram never moves. Plain output has no scrollbar to
+offer, so it prints the source of a too-wide diagram instead of a wrapped mess;
+a diagram type the renderer does not know prints its source in both modes.
 
 ### Sequence, state, class, entities, pie and gantt
 
@@ -292,14 +300,13 @@ Done:
 - [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [x] mermaid sequence, state, class and ER diagrams
 - [x] mermaid `pie` and `gantt` charts
+- [x] sideways scrolling for diagrams wider than the pane
 - [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
 
 - [ ] mermaid `journey` and `mindmap`
-- [ ] horizontal scrolling for diagrams wider than the pane, instead of the
-      source fallback
 - [ ] a config file, so `--toc` and `-images` do not have to be typed every time
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link

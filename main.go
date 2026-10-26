@@ -30,6 +30,7 @@ func main() {
 	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
 	openTOC := flag.Bool("toc", false, "open the table of contents on start")
 	frameFind := flag.String("find", "", "search for this text in the printed frame")
+	frameHScroll := flag.Int("hscroll", 0, "scroll this many columns sideways in the printed frame")
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
 
@@ -79,6 +80,9 @@ func main() {
 			v.runSearch()
 			v.searchJump(0)
 		}
+		if *frameHScroll != 0 {
+			v.scrollX(*frameHScroll)
+		}
 		fmt.Print(v.View().Content)
 		return
 	}
@@ -109,6 +113,9 @@ func main() {
 type renderOpts struct {
 	baseDir string
 	images  image.Protocol
+	// allowWide keeps diagrams wider than the pane: the viewer scrolls them
+	// sideways. Plain output has no scrollbar, so it shows the source instead.
+	allowWide bool
 }
 
 // autoImages picks a protocol: the real one when the output is a plain stream,
@@ -153,7 +160,7 @@ func renderMarkdown(src string, pal Palette, o renderOpts, width int) (string, e
 		}
 		if seg.mermaid {
 			art, err := mermaid.Render(seg.text)
-			if err == nil && art.Width <= width {
+			if err == nil && (art.Width <= width || o.allowWide) {
 				b.WriteString(styleArt(art, pal))
 				b.WriteString("\n")
 				continue

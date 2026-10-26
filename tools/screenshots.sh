@@ -25,6 +25,11 @@ shot charts     84 24 testdata/charts.md
 ./mdv -frame -images halfblock -w 76 -h 24 testdata/imgdemo.md | python3 tools/frame2svg.py >docs/images.svg
 echo "docs/images.svg  <- testdata/imgdemo.md"
 
+# A diagram wider than the pane: the viewer scrolls it instead of showing source.
+./mdv -frame -hscroll 30 -w 76 -h 18 -theme "$theme" testdata/wide.md \
+	| python3 tools/frame2svg.py >docs/wide.svg
+echo "docs/wide.svg  <- testdata/wide.md (scrolled sideways)"
+
 # The viewer screenshot also needs the table of contents open and a live search.
 ./mdv -frame -toc -find heading -w 84 -h 22 -theme "$theme" testdata/viewer.md \
 	| python3 tools/frame2svg.py >docs/viewer.svg

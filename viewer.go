@@ -28,6 +28,7 @@ type viewer struct {
 	lines    []string // rendered ANSI, as displayed
 	links    [][]link // links[line][n]
 	off      int      // first visible line
+	hOff     int      // first visible column, for lines wider than the pane
 	drag     bool     // scrollbar drag in progress
 
 	toc     []tocEntry // headings and where they landed
@@ -42,6 +43,7 @@ type viewer struct {
 }
 
 func newViewer(title, src string, pal Palette, opts renderOpts, width, height int) *viewer {
+	opts.allowWide = true // the viewer scrolls wide diagrams instead of showing source
 	v := &viewer{title: title, src: src, pal: pal, opts: opts}
 	v.resize(width, height)
 	return v
@@ -88,6 +90,22 @@ func (v *viewer) clamp() {
 	if v.off < 0 {
 		v.off = 0
 	}
+	v.hOff = min(max(0, v.hOff), v.maxHOff())
+}
+
+// maxHOff is how far the widest line can be scrolled sideways.
+func (v *viewer) maxHOff() int {
+	widest := 0
+	for _, line := range v.lines {
+		widest = max(widest, ansi.StringWidth(line))
+	}
+	return max(0, widest-v.contentW)
+}
+
+// scrollX moves the sideways offset; text stays put because only lines wider
+// than the pane are cut.
+func (v *viewer) scrollX(delta int) {
+	v.hOff = min(max(0, v.hOff+delta), v.maxHOff())
 }
 
 func (v *viewer) scroll(delta int) {
@@ -143,6 +161,12 @@ func (v *viewer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			v.scroll(v.page() / 2)
 		case "u", "pgup":
 			v.scroll(-v.page() / 2)
+		case "H", "shift+right":
+			v.scrollX(8)
+		case "L", "shift+left":
+			v.scrollX(-8)
+		case "0":
+			v.hOff = 0
 		case "g", "home":
 			v.off = 0
 		case "G", "end":
@@ -184,10 +208,22 @@ func (v *viewer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return v, nil
 }
 
+// clip cuts a line that is wider than the pane to the current sideways offset.
+// Lines that fit are left alone, so body text never shifts.
+func (v *viewer) clip(line string) string {
+	if ansi.StringWidth(line) <= v.contentW {
+		return line
+	}
+	return ansi.Cut(line, v.hOff, v.hOff+v.contentW)
+}
+
 func (v *viewer) linkAt(row, col int) string {
 	line := v.off + row
 	if line < 0 || line >= len(v.links) {
 		return ""
+	}
+	if ansi.StringWidth(v.lines[line]) > v.contentW {
+		col += v.hOff // the line is scrolled, so are its links
 	}
 	for _, l := range v.links[line] {
 		if col >= l.start && col < l.end {
@@ -206,7 +242,8 @@ func (v *viewer) View() tea.View {
 		n := v.off + i
 		line := ""
 		if n < len(v.lines) {
-			line = highlight(v.lines[n], v.query, v.pal)
+			line = v.clip(v.lines[n])
+			line = highlight(line, v.query, v.pal)
 		}
 		b.WriteString(line)
 		b.WriteString("\x1b[m") // a trimmed line ends inside its style; stop it before padding
@@ -266,6 +303,9 @@ func (v *viewer) footer() string {
 		pct = v.off * 100 / v.maxOff()
 	}
 	hints := "q quit  / search  t toc"
+	if v.maxHOff() > 0 {
+		hints = fmt.Sprintf("q quit  / search  t toc  H/L ↔ %d/%d", v.hOff, v.maxHOff())
+	}
 	if v.query != "" {
 		hints = fmt.Sprintf("%d/%d  n/N  esc clear", min(v.matchIdx+1, len(v.matches)), len(v.matches))
 	}
