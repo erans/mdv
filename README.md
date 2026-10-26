@@ -84,8 +84,8 @@ Fences are drawn as box art, inline, in the flow of the document:
 
 Supported today: `graph`/`flowchart` in `LR`, `RL`, `TD` and `TB`, square
 `[]`, rounded `()` and decision `{}` nodes, `-->` `---` `-.->` `==>` edges with
-`|labels|` or `-- labels -->`, chains (`A --> B --> C`) and fan-out
-(`A --> B & C`).
+`|labels|` or `-- labels -->`, chains (`A --> B --> C`), fan-out
+(`A --> B & C`) and `subgraph name[Title]` frames, nested ones included.
 
 ```mermaid
 graph LR
@@ -98,7 +98,9 @@ graph LR
 
 Every edge reserves its own lane in the gap it crosses, so two arrows between
 the same ranks never overlap, and a long edge swings around the boxes it skips
-instead of cutting through them. A diagram too wide for the pane, or a type the
+instead of cutting through them. A frame is sized around its members after the
+layout, and a node that would fall inside somebody else's frame is pushed out
+of it rather than enclosed by mistake. A diagram too wide for the pane, or a type the
 renderer does not know, is printed as source — never clipped.
 
 Sequence, state, class and ER diagrams are next.
@@ -130,8 +132,8 @@ Sequence, state, class and ER diagrams are next.
 - [x] viewer: scrolling, scrollbar with progress, wheel, scrollbar scrub, clickable links
 - [x] Omarchy palettes, terminal queries, built-in fallback
 - [ ] own table renderer (glamour truncates cells at the wrap boundary)
-- [ ] `subgraph` frames and titles (members are drawn, the box is not)
 - [x] mermaid flowcharts as box art (LR/RL/TD/TB, shapes, labels, dashed edges)
+- [x] `subgraph` frames with titles, nested frames, outsiders kept out
 - [ ] mermaid sequence, state, class and ER diagrams
 - [ ] inline images via kitty graphics, iTerm2 and sixel
 

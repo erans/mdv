@@ -129,3 +129,82 @@ func TestLongEdgeLabelDoesNotPanic(t *testing.T) {
 		t.Error("empty art")
 	}
 }
+
+func TestSubgraphsNestAndClaimMembers(t *testing.T) {
+	g := parse(`graph LR
+  subgraph outer[Pipeline]
+    subgraph one[Build]
+      A[checkout] --> B[compile]
+    end
+    B --> C[unit]
+  end
+  C --> D[deploy]
+`)
+	if len(g.subgraphs) != 2 {
+		t.Fatalf("%d subgraphs, want 2", len(g.subgraphs))
+	}
+	outer, one := g.subgraphs[0], g.subgraphs[1]
+	if outer.title != "Pipeline" || one.title != "Build" {
+		t.Errorf("titles = %q, %q", outer.title, one.title)
+	}
+	if one.parent != outer {
+		t.Error("Build should be nested in Pipeline")
+	}
+	if len(outer.members) != 1 || outer.members[0].id != "C" {
+		t.Errorf("outer members = %v", outer.members)
+	}
+	if len(one.members) != 2 {
+		t.Errorf("Build members = %d, want 2", len(one.members))
+	}
+	// B is mentioned inside both; the first frame that claimed it keeps it, and
+	// it still counts as inside the enclosing frame.
+	if !g.inside(g.byID["B"], one) {
+		t.Error("B belongs to Build")
+	}
+	if !g.inside(g.byID["B"], outer) {
+		t.Error("Build is nested in Pipeline, so B is inside Pipeline too")
+	}
+	if g.inside(g.byID["D"], outer) {
+		t.Error("D is outside every frame")
+	}
+}
+
+func TestSubgraphFrameIsDrawnWithTitle(t *testing.T) {
+	out := plain(render(t, "graph LR\n  subgraph ci[CI]\n    A[a] --> B[b]\n  end\n  B --> C[c]\n"))
+	if !strings.Contains(out, "╭─ CI ─") {
+		t.Errorf("no titled frame:\n%s", out)
+	}
+	if !strings.Contains(out, "╰") || !strings.Contains(out, "╯") {
+		t.Errorf("frame is not closed:\n%s", out)
+	}
+}
+
+// A node outside the frame must never end up enclosed by it.
+func TestOutsiderIsPushedOutOfTheFrame(t *testing.T) {
+	g := parse(`graph TD
+  subgraph box[Box]
+    A[a] --> B[b]
+  end
+  A --> C[outsider]
+`)
+	g.layout()
+	for _, sg := range g.subgraphs {
+		for _, n := range g.nodes {
+			if g.inside(n, sg) {
+				continue
+			}
+			inX := n.x+n.w-1 >= sg.x0 && n.x <= sg.x1
+			inY := n.y+n.h-1 >= sg.y0 && n.y <= sg.y1
+			if inX && inY {
+				t.Errorf("node %q sits inside frame %q", n.id, sg.title)
+			}
+		}
+	}
+}
+
+func TestEmptySubgraphDrawsNothing(t *testing.T) {
+	out := plain(render(t, "graph LR\n  subgraph lonely\n  end\n  A[a] --> B[b]\n"))
+	if strings.Contains(out, "╭") {
+		t.Errorf("empty subgraph drew a frame:\n%s", out)
+	}
+}

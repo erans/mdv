@@ -71,6 +71,20 @@ type graph struct {
 	bypass     map[*edge]int
 	bypassSide int
 	declared   bool // saw a `graph`/`flowchart` header
+
+	subgraphs []*subgraph
+	stack     []*subgraph
+	owner     map[*node]*subgraph
+}
+
+// subgraph is a titled frame around a group of nodes.
+type subgraph struct {
+	id, title string
+	parent    *subgraph
+	children  []*subgraph
+	members   []*node
+	x0, y0    int // frame rectangle, inclusive
+	x1, y1    int
 }
 
 // Render parses and draws a flowchart. An error means the caller should show
@@ -88,7 +102,7 @@ func Render(src string) (*Art, error) {
 }
 
 func parse(src string) *graph {
-	g := &graph{dir: "TD", byID: map[string]*node{}}
+	g := &graph{dir: "TD", byID: map[string]*node{}, owner: map[*node]*subgraph{}}
 	for _, raw := range strings.Split(src, "\n") {
 		line := strings.TrimSpace(stripComment(raw))
 		if line == "" {
@@ -102,6 +116,14 @@ func parse(src string) *graph {
 			g.declared = true
 			continue
 		}
+		if rest, ok := strings.CutPrefix(line, "subgraph"); ok {
+			g.openSubgraph(rest)
+			continue
+		}
+		if low == "end" {
+			g.closeSubgraph()
+			continue
+		}
 		if isDirective(low) {
 			continue
 		}
@@ -111,7 +133,7 @@ func parse(src string) *graph {
 }
 
 func isDirective(low string) bool {
-	for _, p := range []string{"subgraph", "end", "style ", "classdef", "class ", "linkstyle", "click", "direction"} {
+	for _, p := range []string{"style ", "classdef", "class ", "linkstyle", "click", "direction"} {
 		if strings.HasPrefix(low, p) {
 			return true
 		}
@@ -126,6 +148,53 @@ func stripComment(s string) string {
 	return s
 }
 
+// openSubgraph reads `subgraph id[Title]`, `subgraph "Title"` or `subgraph id`.
+func (g *graph) openSubgraph(rest string) {
+	rest = strings.TrimSpace(rest)
+	id, title := rest, ""
+	if i := strings.IndexByte(rest, '['); i >= 0 && strings.HasSuffix(rest, "]") {
+		id, title = strings.TrimSpace(rest[:i]), strings.Trim(rest[i+1:len(rest)-1], `" `)
+	} else if strings.HasPrefix(rest, `"`) || strings.Contains(rest, " ") {
+		title = strings.Trim(rest, `" `)
+	}
+	if title == "" {
+		title = id
+	}
+	sg := &subgraph{id: id, title: title}
+	if len(g.stack) > 0 {
+		sg.parent = g.stack[len(g.stack)-1]
+		sg.parent.children = append(sg.parent.children, sg)
+	}
+	g.stack = append(g.stack, sg)
+	g.subgraphs = append(g.subgraphs, sg)
+}
+
+func (g *graph) closeSubgraph() {
+	if len(g.stack) > 0 {
+		g.stack = g.stack[:len(g.stack)-1]
+	}
+}
+
+// adopt puts a node in the innermost open subgraph, once.
+func (g *graph) adopt(n *node) {
+	if len(g.stack) == 0 || g.owner[n] != nil {
+		return
+	}
+	owner := g.stack[len(g.stack)-1]
+	g.owner[n] = owner
+	owner.members = append(owner.members, n)
+}
+
+// inside reports whether n belongs to sg or to a subgraph nested in it.
+func (g *graph) inside(n *node, sg *subgraph) bool {
+	for o := g.owner[n]; o != nil; o = o.parent {
+		if o == sg {
+			return true
+		}
+	}
+	return false
+}
+
 func (g *graph) node(id, label string, sh shape) *node {
 	if label == "" {
 		label = id
@@ -135,11 +204,13 @@ func (g *graph) node(id, label string, sh shape) *node {
 			n.label = label
 			n.shape = sh
 		}
+		g.adopt(n) // first mention decides the frame it belongs to
 		return n
 	}
 	n := &node{id: id, label: label, shape: sh}
 	g.byID[id] = n
 	g.nodes = append(g.nodes, n)
+	g.adopt(n)
 	return n
 }
 
@@ -342,6 +413,108 @@ func (g *graph) layout() {
 	} else {
 		g.placeHorizontal()
 	}
+	g.layoutSubgraphs()
+}
+
+// layoutSubgraphs sizes each frame around its members and pushes any node that
+// would end up inside somebody else's frame out of the way.
+func (g *graph) layoutSubgraphs() {
+	if len(g.subgraphs) == 0 {
+		return
+	}
+	for pass := 0; pass < 8; pass++ { // bounded: each pass only pushes outward
+		moved := false
+		for _, sg := range g.nestedFirst() {
+			g.bounds(sg)
+			if g.makeRoom(sg) {
+				moved = true
+			}
+		}
+		if !moved {
+			break
+		}
+	}
+	for _, sg := range g.subgraphs {
+		g.bounds(sg)
+	}
+}
+
+// nestedFirst orders subgraphs innermost first, so a parent frame can be sized
+// around the frames already placed inside it.
+func (g *graph) nestedFirst() []*subgraph {
+	depth := func(sg *subgraph) int {
+		d := 0
+		for p := sg.parent; p != nil; p = p.parent {
+			d++
+		}
+		return d
+	}
+	out := append([]*subgraph(nil), g.subgraphs...)
+	for i := 1; i < len(out); i++ { // insertion sort by depth, deepest first
+		for j := i; j > 0 && depth(out[j]) > depth(out[j-1]); j-- {
+			out[j], out[j-1] = out[j-1], out[j]
+		}
+	}
+	return out
+}
+
+// bounds sets the frame rectangle: every member, every child frame, plus one
+// column and row of breathing room.
+func (g *graph) bounds(sg *subgraph) {
+	x0, y0, x1, y1 := 0, 0, 0, 0
+	first := true
+	add := func(ax0, ay0, ax1, ay1 int) {
+		if first {
+			x0, y0, x1, y1, first = ax0, ay0, ax1, ay1, false
+			return
+		}
+		x0, y0 = min(x0, ax0), min(y0, ay0)
+		x1, y1 = max(x1, ax1), max(y1, ay1)
+	}
+	for _, m := range sg.members {
+		add(m.x, m.y, m.x+m.w-1, m.y+m.h-1)
+	}
+	for _, ch := range sg.children {
+		add(ch.x0, ch.y0, ch.x1, ch.y1)
+	}
+	if first {
+		return
+	}
+	sg.x0, sg.y0, sg.x1, sg.y1 = x0-2, y0-2, x1+2, y1+2
+}
+
+// makeRoom shifts every non-member node that overlaps sg's frame past it, along
+// the cross axis so the flow direction is untouched.
+func (g *graph) makeRoom(sg *subgraph) bool {
+	moved := false
+	for _, n := range g.nodes {
+		if g.inside(n, sg) {
+			continue
+		}
+		if n.x > sg.x1 || n.x+n.w-1 < sg.x0 || n.y > sg.y1 || n.y+n.h-1 < sg.y0 {
+			continue
+		}
+		var delta int
+		if g.vertical() {
+			delta = sg.x1 + 2 - n.x
+		} else {
+			delta = sg.y1 + 2 - n.y
+		}
+		for _, m := range g.nodes {
+			if g.inside(m, sg) || m.rank != n.rank {
+				continue
+			}
+			if g.vertical() {
+				if m.x >= n.x {
+					m.x += delta
+				}
+			} else if m.y >= n.y {
+				m.y += delta
+			}
+		}
+		moved = true
+	}
+	return moved
 }
 
 func (g *graph) vertical() bool { return g.dir != "LR" && g.dir != "RL" }
@@ -415,6 +588,9 @@ func (g *graph) placeVertical() {
 		}
 		y += 3
 		gap := max(2, span[i]+1) // last row stays free for arrowheads
+		if len(g.subgraphs) > 0 {
+			gap += 2 // room for frames around the members
+		}
 		g.gapRows[i] = make([]int, 0, gap)
 		for k := 0; k < gap; k++ {
 			g.gapRows[i] = append(g.gapRows[i], y+k)
@@ -460,6 +636,9 @@ func (g *graph) placeHorizontal() {
 		}
 		x += width
 		gap := max(3, span[i]+2) // last column stays free for arrowheads
+		if len(g.subgraphs) > 0 {
+			gap += 2 // room for frames around the members
+		}
 		g.gapCols[i] = make([]int, 0, gap)
 		for k := 0; k < gap; k++ {
 			g.gapCols[i] = append(g.gapCols[i], x+k)
@@ -495,6 +674,48 @@ func (g *graph) draw() *Art {
 			h += 1 + g.bypassSide
 		}
 	}
+	// Frames can reach past the nodes; slide the whole diagram back into
+	// positive space so nothing is drawn off-canvas. Starting at zero (rather
+	// than one) keeps the art's first row on the canvas's first row.
+	dx, dy := 0, 0
+	for _, n := range g.nodes {
+		dx, dy = max(dx, -n.x), max(dy, -n.y)
+	}
+	for _, sg := range g.subgraphs {
+		if len(sg.members) == 0 && len(sg.children) == 0 {
+			continue
+		}
+		dx, dy = max(dx, -sg.x0), max(dy, -sg.y0)
+	}
+	if dx != 0 || dy != 0 {
+		for _, n := range g.nodes {
+			n.x, n.y = n.x+dx, n.y+dy
+		}
+		for _, rows := range g.gapRows { // lanes are absolute, so they move too
+			for i := range rows {
+				rows[i] += dy
+			}
+		}
+		for _, cols := range g.gapCols {
+			for i := range cols {
+				cols[i] += dx
+			}
+		}
+		for _, sg := range g.subgraphs {
+			sg.x0, sg.y0 = sg.x0+dx, sg.y0+dy
+			sg.x1, sg.y1 = sg.x1+dx, sg.y1+dy
+		}
+		w, h = 1, 1
+	}
+	for _, n := range g.nodes {
+		w, h = max(w, n.x+n.w+2), max(h, n.y+n.h+2)
+	}
+	for _, sg := range g.subgraphs {
+		if len(sg.members) == 0 && len(sg.children) == 0 {
+			continue
+		}
+		w, h = max(w, sg.x1+2), max(h, sg.y1+2)
+	}
 	c := newCanvas(w, h)
 	c.g = g
 	c.bypassX = map[*edge]int{}
@@ -504,6 +725,11 @@ func (g *graph) draw() *Art {
 			c.bypassX[e] = maxRight + 1 + i
 		} else {
 			c.bypassY[e] = maxBottom + 1 + i
+		}
+	}
+	for _, sg := range g.subgraphs {
+		if len(sg.members) > 0 || len(sg.children) > 0 {
+			c.frame(sg)
 		}
 	}
 	for _, n := range g.nodes {
@@ -523,7 +749,41 @@ func (g *graph) draw() *Art {
 	for _, e := range g.edges {
 		c.edgeLabel(e, lanes[e], g.vertical())
 	}
+	for _, sg := range g.subgraphs {
+		if len(sg.members) > 0 || len(sg.children) > 0 {
+			c.frameTitle(sg)
+		}
+	}
 	return c.art()
+}
+
+// frame draws a subgraph's rounded border; the title is written later so a
+// crossing edge cannot cover it.
+func (c *canvas) frame(sg *subgraph) {
+	c.put(sg.x0, sg.y0, '╭', Border)
+	c.put(sg.x1, sg.y0, '╮', Border)
+	c.put(sg.x0, sg.y1, '╰', Border)
+	c.put(sg.x1, sg.y1, '╯', Border)
+	for x := sg.x0 + 1; x < sg.x1; x++ {
+		c.put(x, sg.y0, '─', Border)
+		c.put(x, sg.y1, '─', Border)
+	}
+	for y := sg.y0 + 1; y < sg.y1; y++ {
+		c.put(sg.x0, y, '│', Border)
+		c.put(sg.x1, y, '│', Border)
+	}
+}
+
+// frameTitle writes ` title ` into the top border when it fits.
+func (c *canvas) frameTitle(sg *subgraph) {
+	if sg.title == "" {
+		return
+	}
+	label := " " + sg.title + " "
+	if sg.x0+1+len([]rune(label)) > sg.x1-1 {
+		return // frame too narrow for a title; the members still show the group
+	}
+	c.text(sg.x0+2, sg.y0, label, Title)
 }
 
 func (c *canvas) box(n *node) {

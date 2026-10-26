@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="756" height="782" viewBox="0 0 756 782" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#cdd6f4">
-<rect width="756" height="782" rx="10" fill="#11111b"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="756" height="894" viewBox="0 0 756 894" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#cdd6f4">
+<rect width="756" height="894" rx="10" fill="#11111b"/>
 <text x="16.0" y="31.0" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600" text-decoration="underline">Graphs and</text>
 <text x="100.3" y="31.0" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600" text-decoration="underline"> flowcharts</text>
 <text x="193.0" y="31.0" textLength="539.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600" text-decoration="underline">                                                                </text>
@@ -201,29 +201,123 @@
 <text x="285.7" y="631.3" textLength="446.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                     </text>
 <rect x="732.4" y="616.7" width="8.4" height="18.8" fill="#cdd6f4"/>
 <text x="16.0" y="650.1" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
-<rect x="735.9" y="635.5" width="1.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="668.8" textLength="160.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">Shapes, directions,</text>
-<text x="176.1" y="668.8" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> weights</text>
-<text x="243.6" y="668.8" textLength="488.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                                          </text>
-<rect x="735.9" y="654.2" width="1.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="687.6" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
-<rect x="735.9" y="673.0" width="1.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="706.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
-<text x="24.4" y="706.4" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">Fence</text>
-<text x="66.6" y="706.4" textLength="320.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                    │ </text>
-<text x="386.8" y="706.4" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">Draws</text>
-<text x="429.0" y="706.4" textLength="303.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                    </text>
+<rect x="732.4" y="635.5" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="668.8" textLength="109.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">Groups become</text>
+<text x="125.6" y="668.8" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> frames</text>
+<text x="184.6" y="668.8" textLength="547.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                                                 </text>
+<rect x="732.4" y="654.2" width="8.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="687.6" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">╭─</text>
+<text x="32.9" y="687.6" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> Build </text>
+<text x="91.9" y="687.6" textLength="193.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">──────────────────────╮</text>
+<text x="285.7" y="687.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="294.1" y="687.6" textLength="16.9" lengthAdjust="spacingAndGlyphs" xml:space="preserve">╭─</text>
+<text x="311.0" y="687.6" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> Test </text>
+<text x="361.5" y="687.6" textLength="202.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">───────────────────────╮</text>
+<text x="563.8" y="687.6" textLength="168.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                    </text>
+<rect x="732.4" y="673.0" width="8.4" height="18.8" fill="#cdd6f4"/>
+<rect x="19.5" y="691.7" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="24.4" y="706.4" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
+<rect x="280.8" y="691.7" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="285.7" y="706.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="297.6" y="691.7" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="302.6" y="706.4" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
+<rect x="558.9" y="691.7" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="563.8" y="706.4" textLength="168.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                    </text>
 <rect x="735.9" y="691.7" width="1.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="725.1" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">──────────────────────────────────────────┼──────────────────────────────────────────</text>
+<rect x="19.5" y="710.5" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="24.4" y="725.1" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="32.9" y="725.1" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">┌──────────┐</text>
+<text x="134.0" y="725.1" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">     </text>
+<text x="176.1" y="725.1" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">┌─────────┐</text>
+<text x="268.8" y="725.1" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="280.8" y="710.5" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="285.7" y="725.1" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="297.6" y="710.5" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="302.6" y="725.1" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="311.0" y="725.1" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">┌──────┐</text>
+<text x="378.4" y="725.1" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">     </text>
+<text x="420.5" y="725.1" textLength="126.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">┌─────────────┐</text>
+<text x="547.0" y="725.1" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="558.9" y="710.5" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="563.8" y="725.1" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">   </text>
+<text x="589.1" y="725.1" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">┌────────┐</text>
+<text x="673.4" y="725.1" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">       </text>
 <rect x="735.9" y="710.5" width="1.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
-<text x="24.4" y="743.9" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">graph LR</text>
-<text x="91.9" y="743.9" textLength="295.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                 │ </text>
-<text x="386.8" y="743.9" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">left to</text>
-<text x="445.8" y="743.9" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> right</text>
-<text x="496.4" y="743.9" textLength="236.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                            </text>
+<rect x="19.5" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="24.4" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="36.4" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="41.3" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="49.7" y="743.9" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">checkout</text>
+<text x="117.1" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="129.1" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="134.0" y="743.9" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">────▶</text>
+<rect x="179.6" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="184.6" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="193.0" y="743.9" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">compile</text>
+<text x="252.0" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="263.9" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="268.8" y="743.9" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">─┼─┼▶</text>
+<rect x="314.5" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="319.4" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="327.8" y="743.9" textLength="33.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">unit</text>
+<text x="361.5" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="373.5" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="378.4" y="743.9" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">────▶</text>
+<rect x="424.1" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="429.0" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="437.4" y="743.9" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">integration</text>
+<text x="530.1" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="542.0" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="547.0" y="743.9" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">─┼──▶</text>
+<rect x="592.6" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="597.5" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="606.0" y="743.9" textLength="50.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">deploy</text>
+<text x="656.5" y="743.9" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="668.5" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="673.4" y="743.9" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">       </text>
 <rect x="735.9" y="729.3" width="1.4" height="18.8" fill="#cdd6f4"/>
-<text x="16.0" y="762.6" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">flowchart.md</text>
-<text x="117.1" y="762.6" textLength="480.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                         </text>
-<text x="597.5" y="762.6" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">0%  39/46  q quit</text>
+<rect x="19.5" y="748.0" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="24.4" y="762.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="32.9" y="762.6" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">└──────────┘</text>
+<text x="134.0" y="762.6" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">     </text>
+<text x="176.1" y="762.6" textLength="92.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">└─────────┘</text>
+<text x="268.8" y="762.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="280.8" y="748.0" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="285.7" y="762.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="297.6" y="748.0" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="302.6" y="762.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="311.0" y="762.6" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">└──────┘</text>
+<text x="378.4" y="762.6" textLength="42.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">     </text>
+<text x="420.5" y="762.6" textLength="126.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">└─────────────┘</text>
+<text x="547.0" y="762.6" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="558.9" y="748.0" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="563.8" y="762.6" textLength="25.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">   </text>
+<text x="589.1" y="762.6" textLength="84.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">└────────┘</text>
+<text x="673.4" y="762.6" textLength="59.0" lengthAdjust="spacingAndGlyphs" xml:space="preserve">       </text>
+<rect x="735.9" y="748.0" width="1.4" height="18.8" fill="#cdd6f4"/>
+<rect x="19.5" y="766.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="24.4" y="781.4" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
+<rect x="280.8" y="766.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="285.7" y="781.4" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<rect x="297.6" y="766.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="302.6" y="781.4" textLength="252.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                              </text>
+<rect x="558.9" y="766.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="563.8" y="781.4" textLength="168.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                    </text>
+<rect x="735.9" y="766.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="800.2" textLength="269.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">╰──────────────────────────────╯</text>
+<text x="285.7" y="800.2" textLength="8.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve"> </text>
+<text x="294.1" y="800.2" textLength="269.7" lengthAdjust="spacingAndGlyphs" xml:space="preserve">╰──────────────────────────────╯</text>
+<text x="563.8" y="800.2" textLength="168.6" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                    </text>
+<rect x="735.9" y="785.5" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="818.9" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="735.9" y="804.3" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="837.7" textLength="160.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">Shapes, directions,</text>
+<text x="176.1" y="837.7" textLength="67.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600"> weights</text>
+<text x="243.6" y="837.7" textLength="488.8" lengthAdjust="spacingAndGlyphs" xml:space="preserve" font-weight="600">                                                          </text>
+<rect x="735.9" y="823.1" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="856.4" textLength="716.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                                                     </text>
+<rect x="735.9" y="841.8" width="1.4" height="18.8" fill="#cdd6f4"/>
+<text x="16.0" y="875.2" textLength="101.1" lengthAdjust="spacingAndGlyphs" xml:space="preserve">flowchart.md</text>
+<text x="117.1" y="875.2" textLength="480.4" lengthAdjust="spacingAndGlyphs" xml:space="preserve">                                                         </text>
+<text x="597.5" y="875.2" textLength="143.3" lengthAdjust="spacingAndGlyphs" xml:space="preserve">0%  45/56  q quit</text>
 </svg>

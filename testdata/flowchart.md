@@ -21,6 +21,20 @@ flowchart TD
   C -->|no| E[notify the team]
 ```
 
+## Groups become frames
+
+```mermaid
+graph LR
+  subgraph build[Build]
+    A[checkout] --> B[compile]
+  end
+  subgraph test[Test]
+    C[unit] --> D[integration]
+  end
+  B --> C
+  D --> E[deploy]
+```
+
 ## Shapes, directions, weights
 
 | Fence | Draws |
@@ -29,6 +43,7 @@ flowchart TD
 | `flowchart TD` | top to bottom |
 | `A[x]` `B(y)` `C{z}` | square, rounded, decision |
 | `-->` `---` `-.->` | arrow, line, dashed |
+| `subgraph name[Title]` | a titled frame around its members |
 
 - edges keep their labels, and two edges between the same ranks never overlap
 - a diagram too wide for the pane is printed as source, never clipped
