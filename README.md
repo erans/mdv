@@ -351,3 +351,7 @@ tools/release.sh v0.1.0 --publish   # …then push and publish
 
 Pushing a `v*` tag runs the same script in CI and attaches the same assets, so
 a local release and a CI release cannot drift apart.
+
+---
+
+Created on [LunaRoute](https://www.lunaroute.com) using DeepSeek 4.1 Flash
