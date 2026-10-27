@@ -3,7 +3,7 @@ package main
 // manPage is the mdv(1) manual, in roff. `mdv -man` prints it and
 // tools/manpage.sh writes it to docs/mdv.1, so the page can never drift from
 // the binary that ships it.
-const manPage = `.TH MDV 1 "2024-10-27" "mdv" "User Commands"
+const manPage = `.TH MDV 1 "2026-10-27" "mdv" "User Commands"
 .SH NAME
 mdv \- read a markdown file in the terminal, in your desktop's colours
 .SH SYNOPSIS
