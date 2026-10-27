@@ -1,0 +1,180 @@
+package main
+
+// manPage is the mdv(1) manual, in roff. `mdv -man` prints it and
+// tools/manpage.sh writes it to docs/mdv.1, so the page can never drift from
+// the binary that ships it.
+const manPage = `.TH MDV 1 "2024-10-27" "mdv" "User Commands"
+.SH NAME
+mdv \- read a markdown file in the terminal, in your desktop's colours
+.SH SYNOPSIS
+.B mdv
+[\fIoptions\fR] [\fIfile\fR]
+.SH DESCRIPTION
+.B mdv
+renders markdown for a terminal: headings, tables, syntax-highlighted code,
+clickable links and mermaid diagrams drawn as box art. Colours come from the
+desktop theme, so the output matches the terminal it runs in.
+.PP
+With no file,
+.B mdv
+reads standard input. With a terminal on standard output it opens a full-screen
+viewer; otherwise it prints once and exits, which is what pipes get.
+.SH OPTIONS
+.TP
+.BI \-w " columns"
+Wrap width. Defaults to the terminal width.
+.TP
+.BI \-theme " file"
+A \fIcolors.toml\fR to use instead of the desktop theme.
+.TP
+.B \-plain
+Print once instead of opening the viewer. Automatic when standard output is
+not a terminal.
+.TP
+.B \-palette
+Print the resolved palette and exit.
+.TP
+.B \-toc
+Open the table of contents pane on start. Same as pressing \fBt\fR.
+.TP
+.B \-images " mode"
+Inline images: \fBauto\fR, \fBkitty\fR, \fBiterm2\fR, \fBsixel\fR,
+\fBhalfblock\fR or \fBoff\fR. \fBauto\fR picks the protocol the terminal
+reports, and half blocks inside the viewer.
+.TP
+.BI \-config " file"
+Read another config file than
+.IR "$XDG_CONFIG_HOME/mdv/config.json" .
+.TP
+.BI \-frame
+Print one viewer frame and exit. Used with \fB\-w\fR and \fB\-h\fR to make
+screenshots.
+.TP
+.BI \-h " rows"
+Frame height in rows, with \fB\-frame\fR.
+.TP
+.BI \-find " text"
+Search for \fItext\fR in the printed frame.
+.TP
+.BI \-hscroll " columns"
+Scroll the printed frame sideways by \fIcolumns\fR.
+.TP
+.B \-man
+Print this manual and exit.
+.TP
+.BI \-completions " shell"
+Print a completion script for \fBbash\fR, \fBzsh\fR or \fBfish\fR and exit.
+.SH KEYS
+.TP
+.B wheel, j, k, Up, Down
+Scroll a line. The wheel moves three.
+.TP
+.B click, drag
+On the scrollbar: jump, or scrub through the document.
+.TP
+.B click
+On a link: open it with \fBxdg-open\fR (or \fBopen\fR on macOS).
+.TP
+.B d, u, space, PgUp, PgDn
+Scroll half a page.
+.TP
+.B g, G, Home, End
+Jump to the top or the bottom.
+.TP
+.B /
+Search. Type to filter, \fBenter\fR jumps to the first match, \fBn\fR and
+\fBN\fR step forward and back, \fBesc\fR clears.
+.TP
+.B H, L, 0
+Scroll sideways when a diagram is wider than the pane, and back to the left.
+.TP
+.B t
+Open or close the table of contents. \fBj\fR and \fBk\fR move, \fBenter\fR or a
+click jumps.
+.TP
+.B q, Esc, Ctrl+C
+Quit. \fBEsc\fR first closes the search prompt or the contents pane.
+.SH THEME
+Colours come from the first source that answers:
+.IP 1. 4
+the \fB\-theme\fR file, or the active Omarchy theme
+.RI ( ~/.local/state/omarchy/current/theme/colors.toml ,
+then Omarchy 2's
+.IR ~/.config/omarchy/current/theme/colors.toml );
+.IP 2. 4
+the terminal itself, asked for its default foreground and background and its
+six ANSI hues in one bounded query;
+.IP 3. 4
+a built-in dark palette.
+.PP
+The theme file wins over the terminal on purpose: over SSH the local terminal is
+only a window onto someone else's desktop, so the remote theme decides the
+colours and whether the result is light or dark.
+.SH CONFIG
+Flags can live in \fI$XDG_CONFIG_HOME/mdv/config.json\fR, which defaults to
+\fI~/.config/mdv/config.json\fR:
+.PP
+.RS 4
+.nf
+{
+  "toc": true,
+  "images": "kitty",
+  "width": 100,
+  "theme": "~/themes/mine.toml"
+}
+.fi
+.RE
+.PP
+Only the keys present are applied, and the command line always wins over the
+file. A missing file is silent; a malformed one prints a warning and
+.B mdv
+starts anyway.
+.SH MERMAID
+Fenced \fBmermaid\fR blocks are drawn as box art:
+\fBgraph\fR and \fBflowchart\fR (with \fBsubgraph\fR frames),
+\fBsequenceDiagram\fR (with \fBloop\fR, \fBalt\fR and \fBnote\fR),
+\fBstateDiagram\-v2\fR, \fBclassDiagram\fR, \fBerDiagram\fR, \fBpie\fR,
+\fBgantt\fR, \fBjourney\fR and \fBmindmap\fR. A diagram wider than the pane is
+kept and scrolled with \fBH\fR and \fBL\fR; a type mdv does not know prints its
+source.
+.SH IMAGES
+A paragraph that is nothing but \fB![alt](file.png)\fR is painted in place, with
+the kitty graphics protocol, iTerm2 inline images, sixel, or half blocks. Remote
+URLs are never fetched. The cell size behind the layout is queried from the
+terminal, and 10x20 pixels are assumed only when it does not answer.
+.SH ENVIRONMENT
+.TP
+.B XDG_CONFIG_HOME
+Where the config file lives. Defaults to \fI~/.config\fR.
+.TP
+.B XDG_STATE_HOME
+Where Omarchy keeps the active theme. Defaults to \fI~/.local/state\fR.
+.TP
+.B TERM, TERM_PROGRAM, KITTY_WINDOW_ID, GHOSTTY_RESOURCES_DIR, WEZTERM_PANE, ITERM_SESSION_ID
+Identify the terminal, so \fBmdv\fR knows which image protocol and which colour
+queries it can use.
+.SH FILES
+.TP
+.I ~/.config/mdv/config.json
+Default options.
+.TP
+.I ~/.local/state/omarchy/current/theme/colors.toml
+The active Omarchy theme.
+.SH EXAMPLES
+.PP
+.RS 4
+.nf
+mdv README.md                     read a file
+mdv \-w 100 README.md             at a fixed width
+cat x.md | mdv                    from standard input
+mdv \-plain README.md             print once, no viewer
+mdv \-\-toc README.md             open with the contents pane
+mdv \-images sixel x.md           force a protocol
+mdv \-man | man \-l \-            this manual
+.fi
+.RE
+.SH SEE ALSO
+.BR less (1),
+.BR glow (1),
+.BR man (1)
+`

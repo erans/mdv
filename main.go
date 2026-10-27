@@ -29,11 +29,27 @@ func main() {
 	frame := flag.Bool("frame", false, "print one viewer frame and exit (for screenshots)")
 	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
 	configFlag := flag.String("config", "", "config file to read instead of ~/.config/mdv/config.json")
+	showMan := flag.Bool("man", false, "print the manual and exit")
+	completions := flag.String("completions", "", "print a completion script (bash, zsh, fish) and exit")
 	openTOC := flag.Bool("toc", false, "open the table of contents on start")
 	frameFind := flag.String("find", "", "search for this text in the printed frame")
 	frameHScroll := flag.Int("hscroll", 0, "scroll this many columns sideways in the printed frame")
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
+
+	if *showMan {
+		fmt.Print(manPage)
+		return
+	}
+	if *completions != "" {
+		script, err := completionScript(*completions)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "mdv:", err)
+			os.Exit(1)
+		}
+		fmt.Print(script)
+		return
+	}
 
 	set := map[string]bool{}
 	flag.Visit(func(f *flag.Flag) { set[f.Name] = true })

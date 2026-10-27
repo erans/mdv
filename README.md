@@ -70,6 +70,8 @@ mdv --toc README.md      # start with the contents pane open
 | `-images MODE` | `auto` (default), `kitty`, `iterm2`, `sixel`, `halfblock`, `off` |
 | `--toc` | open the contents pane on start (same as pressing `t`) |
 | `-config PATH` | read another config file than `~/.config/mdv/config.json` |
+| `-man` | print the manual and exit |
+| `-completions SHELL` | print completions for `bash`, `zsh` or `fish` and exit |
 
 | Input | Does |
 | --- | --- |
@@ -82,6 +84,25 @@ mdv --toc README.md      # start with the contents pane open
 | `H`/`L`, `0` | scroll sideways when a diagram is wider than the pane, and back |
 | `t` | table of contents pane; `j`/`k` move, `enter`/click jumps |
 | `q`, `Esc`, `Ctrl+C` | quit (`Esc` first closes search or the pane) |
+
+## Manual and completions
+
+The binary carries its own documentation, so neither can drift from the flags it
+actually has:
+
+```sh
+mdv -man > /usr/local/share/man/man1/mdv.1      # then: man mdv
+mdv -man | man -l -                             # read it without installing
+
+mdv -completions bash > /etc/bash_completion.d/mdv
+mdv -completions zsh  > "${fpath[1]}/_mdv"
+mdv -completions fish > ~/.config/fish/completions/mdv.fish
+```
+
+The manual covers the options, the viewer keys, the theme resolution order, the
+config file, the supported mermaid types and the environment variables it reads.
+Completions know the flags, the `-images` modes and the shell names, and fall
+back to file completion for the file argument.
 
 ## Config file
 
@@ -330,12 +351,14 @@ Done:
 - [x] mermaid `pie`, `gantt`, `journey` and `mindmap`
 - [x] sideways scrolling for diagrams wider than the pane
 - [x] config file for the flags you always type
+- [x] man page (`-man`) and shell completions (`-completions`)
 - [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
 
 Next:
 
-- [ ] a `man` page and shell completions
+- [ ] a tagged release, so `go install github.com/erans/mdv@latest` resolves to
+      a version instead of a pseudo-version
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the table layout, the mermaid layouts, the image
