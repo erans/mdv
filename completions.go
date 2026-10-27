@@ -18,6 +18,7 @@ var completionFlags = []struct{ name, desc string }{
 	{"find", "search for this text in the printed frame"},
 	{"hscroll", "scroll the printed frame sideways"},
 	{"man", "print the manual and exit"},
+	{"version", "print the version and exit"},
 	{"completions", "print a completion script and exit"},
 }
 

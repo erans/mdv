@@ -70,6 +70,7 @@ mdv --toc README.md      # start with the contents pane open
 | `-images MODE` | `auto` (default), `kitty`, `iterm2`, `sixel`, `halfblock`, `off` |
 | `--toc` | open the contents pane on start (same as pressing `t`) |
 | `-config PATH` | read another config file than `~/.config/mdv/config.json` |
+| `-version` | print the version, OS and architecture and exit |
 | `-man` | print the manual and exit |
 | `-completions SHELL` | print completions for `bash`, `zsh` or `fish` and exit |
 
@@ -103,6 +104,26 @@ The manual covers the options, the viewer keys, the theme resolution order, the
 config file, the supported mermaid types and the environment variables it reads.
 Completions know the flags, the `-images` modes and the shell names, and fall
 back to file completion for the file argument.
+
+## Releasing
+
+Releases are cut from `main` with one script, which also defines what a release
+contains:
+
+```sh
+tools/release.sh v0.1.0             # test, build six binaries, tag
+tools/release.sh v0.1.0 --publish   # …then push the tag and create the release
+```
+
+Each release carries `mdv_<version>_<os>_<arch>` archives for **linux** and
+**darwin** on amd64 and arm64, and **windows** zips for the same two
+architectures, each with the README and the man page inside, plus
+`checksums.txt`. The binaries are static (`CGO_ENABLED=0`) and stamped with the
+version, so `mdv -version` tells you what you are running.
+
+Pushing a `v*` tag runs `.github/workflows/release.yml`, which calls the same
+script and attaches the same assets to the GitHub release — so CI and a local
+`--publish` cannot drift apart.
 
 ## Config file
 
@@ -352,13 +373,9 @@ Done:
 - [x] sideways scrolling for diagrams wider than the pane
 - [x] config file for the flags you always type
 - [x] man page (`-man`) and shell completions (`-completions`)
+- [x] release script and tag-triggered workflow, six cross-built binaries
 - [x] sequence `loop`/`alt`/`opt` frames, `else` dividers and notes
 - [x] inline images via kitty graphics, iTerm2, sixel and half blocks
-
-Next:
-
-- [ ] a tagged release, so `go install github.com/erans/mdv@latest` resolves to
-      a version instead of a pseudo-version
 
 `go test ./...` covers the palette parser, the OSC reply parser, the link
 recovery, the scrollbar math, the table layout, the mermaid layouts, the image

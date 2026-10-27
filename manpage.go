@@ -59,6 +59,9 @@ Search for \fItext\fR in the printed frame.
 .BI \-hscroll " columns"
 Scroll the printed frame sideways by \fIcolumns\fR.
 .TP
+.B \-version
+Print the version, operating system and architecture and exit.
+.TP
 .B \-man
 Print this manual and exit.
 .TP

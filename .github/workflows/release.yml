@@ -1,0 +1,42 @@
+name: release
+
+# Pushing a v* tag builds the six binaries and attaches them to the GitHub
+# release. tools/release.sh is the single source of truth for what a release
+# contains, so CI and a local `tools/release.sh --publish` produce the same
+# assets.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: build assets
+        run: tools/release.sh "$GITHUB_REF_NAME" --skip-tag
+
+      - name: publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            dist/*.tar.gz dist/*.zip dist/checksums.txt \
+            --title "mdv $GITHUB_REF_NAME" --notes-from-tag \
+          || gh release upload "$GITHUB_REF_NAME" \
+            dist/*.tar.gz dist/*.zip dist/checksums.txt --clobber
+
+      - name: summary
+        run: gh release view "$GITHUB_REF_NAME" --json assets -q '.assets[].name'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

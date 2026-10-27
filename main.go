@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"unicode/utf8"
 
@@ -21,6 +22,9 @@ import (
 
 var sgr = regexp.MustCompile("\x1b\\[[0-9;]*m")
 
+// version is stamped at build time by tools/release.sh; "dev" is a local build.
+var version = "dev"
+
 func main() {
 	width := flag.Int("w", 0, "wrap width in columns (default: terminal width)")
 	themePath := flag.String("theme", "", "colors.toml to use instead of the desktop theme")
@@ -30,6 +34,7 @@ func main() {
 	imagesFlag := flag.String("images", "auto", "inline images: auto, kitty, iterm2, sixel, halfblock, off")
 	configFlag := flag.String("config", "", "config file to read instead of ~/.config/mdv/config.json")
 	showMan := flag.Bool("man", false, "print the manual and exit")
+	showVersion := flag.Bool("version", false, "print the version and exit")
 	completions := flag.String("completions", "", "print a completion script (bash, zsh, fish) and exit")
 	openTOC := flag.Bool("toc", false, "open the table of contents on start")
 	frameFind := flag.String("find", "", "search for this text in the printed frame")
@@ -37,6 +42,10 @@ func main() {
 	height := flag.Int("h", 24, "frame height in rows, with -frame")
 	flag.Parse()
 
+	if *showVersion {
+		fmt.Printf("mdv %s (%s/%s)\n", version, runtime.GOOS, runtime.GOARCH)
+		return
+	}
 	if *showMan {
 		fmt.Print(manPage)
 		return
