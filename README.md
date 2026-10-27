@@ -339,19 +339,6 @@ Honest ones, so you know what you are downloading:
 - The Windows binaries are cross-built but untested on a real Windows desktop,
   and clicking a link runs `xdg-open`, which Windows does not have.
 
-## Releasing
-
-Releases are cut from `main` with one script — which is also what defines a
-release:
-
-```sh
-tools/release.sh v0.1.0             # test, build six binaries, tag
-tools/release.sh v0.1.0 --publish   # …then push and publish
-```
-
-Pushing a `v*` tag runs the same script in CI and attaches the same assets, so
-a local release and a CI release cannot drift apart.
-
 ---
 
 Created on [LunaRoute](https://www.lunaroute.com) using DeepSeek 4.1 Flash
