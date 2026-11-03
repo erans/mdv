@@ -4,7 +4,7 @@
 # file, regenerate the metadata: cd aur && makepkg --printsrcinfo >.SRCINFO
 # Maintainer: Eran <erans@users.noreply.github.com>
 pkgname=mdv
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc='Terminal markdown viewer that follows your desktop palette, with inline images and rendered mermaid diagrams'
 arch=(x86_64 aarch64)
@@ -13,7 +13,7 @@ license=(MIT)
 makedepends=(go) # go.mod wants go >= 1.26.0
 optdepends=('xdg-utils: open document links in your browser')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver/$pkgname-$pkgver.tar.gz")
-sha256sums=('b281846938811859bdd32cf9da2419d192799eafc188ed014a4c9c10e4f01d39')
+sha256sums=('f82277b09e9cd102fb4ecdc73f525238f89e33006bce4247e1d8728a7a2a2410')
 
 build() {
 	cd "$pkgname-$pkgver"
