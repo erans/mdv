@@ -3,7 +3,8 @@ name: release
 # Pushing a v* tag builds the six binaries and attaches them to the GitHub
 # release. tools/release.sh is the single source of truth for what a release
 # contains, so CI and a local `tools/release.sh --publish` produce the same
-# assets.
+# assets. The same tag also publishes the package to the AUR (job below, needs
+# the AUR_SSH_KEY secret).
 on:
   push:
     tags: ["v*"]
@@ -40,3 +41,25 @@ jobs:
         run: gh release view "$GITHUB_REF_NAME" --json assets -q '.assets[].name'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Independent of the binary build: the AUR only needs the source tarball of the
+  # tag, and the packaging template in aur/ as it stands on main.
+  aur:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: publish to the AUR
+        env:
+          AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
+        run: |
+          set -eu
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$AUR_SSH_KEY" >~/.ssh/aur && chmod 600 ~/.ssh/aur
+          # pinned, and readable on https://aur.archlinux.org — a keyscan here
+          # would trust whatever answered first
+          echo 'aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrPzbawxA/k2g6NcyV5jmqwJ2s+zpgZGZ7tpLIcN' >>~/.ssh/known_hosts
+          export GIT_SSH_COMMAND='ssh -i ~/.ssh/aur -o IdentitiesOnly=yes'
+          tools/aur.sh "$GITHUB_REF_NAME"
